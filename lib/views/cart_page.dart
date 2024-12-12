@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/views/shared.dart';
+import 'package:furnishly/views/shared.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -7,7 +7,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const MyAppBar() ,
+      appBar:  MyAppBar() ,
       body: SafeArea(
         child: Center(
           child: Column(
