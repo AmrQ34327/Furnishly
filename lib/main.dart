@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/model/model.dart' as model;
 import 'package:furnishly/views/edit_profile.dart';
+import 'package:furnishly/views/view_products.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:furnishly/views/account_page.dart';
 import 'package:furnishly/views/cart_page.dart';
@@ -88,7 +89,19 @@ class _MyAppState extends State<MyApp> {
               WidgetStatePropertyAll(Color.fromARGB(255, 255, 255, 255)),
           backgroundColor: WidgetStatePropertyAll(Color(0xFF556B2F)),
         )),
-      ),
+      chipTheme: const ChipThemeData(
+        shape: StadiumBorder(),
+          backgroundColor:  Color(0xFF2C3E50), 
+          selectedColor: Color(0xFFB58D4B),   
+          disabledColor: Colors.white,    
+          padding: EdgeInsets.all(4.0), // make it adaptive
+          labelStyle: TextStyle(
+            color: Colors.white, // Text color inside chip
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+          elevation: 4, 
+        ),),
       initialRoute: '/home',
       debugShowCheckedModeBanner: false,
       routes: {
@@ -97,7 +110,8 @@ class _MyAppState extends State<MyApp> {
         '/cart': (context) => const CartPage(),
         '/categories': (context) => const CategoriesPage(),
         '/signup': (context) => const SignUpPage(),
-        '/editProfile': (context) => EditAccountPage()
+        '/editProfile': (context) => EditAccountPage(),
+        '/viewProducts': (context) => ViewProducts(),
       },
     );
   }
