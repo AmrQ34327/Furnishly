@@ -320,9 +320,9 @@ var categoriesList = [
 
 
 List showProductsByCategory(String chosenCategory){
-  var returnedProductsList =
+  List<Product> returnedProductsList =
     productList.where((product) => product.category.title == chosenCategory).toList();
-  return returnedProductsList;
+  return  returnedProductsList;
 }
 
 

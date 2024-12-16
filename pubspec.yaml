@@ -73,6 +73,7 @@ flutter:
   assets:
     - assets/googlelogo.png
     - assets/images/
+    - assets/images/categories/
 
     
   #   - images/a_dot_ham.jpeg
