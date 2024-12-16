@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class Account {
   String username;
@@ -20,8 +19,6 @@ class Account {
     this.orderList = const [],
     this.wishlist = const [],
   });
-
-  
 }
 
 // transfare to controller section in the end
@@ -57,7 +54,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Adds an address to the user's address list and changes main address
+  // and changes main address
   void addAddress(String address) {
     _currentUser!.mainAddress = address;
     notifyListeners();
