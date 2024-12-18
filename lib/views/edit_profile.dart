@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:furnishly/controller/controller.dart';
 import 'package:furnishly/views/shared.dart';
 import 'package:provider/provider.dart';
 import '../model/model.dart';
@@ -74,7 +75,7 @@ class EditAccountPage extends StatelessWidget {
                             // show succesful dialog check inbox for verefication
                             showSuccesDialog(
                                 "Please check your inbox for a verification email to complete the process",
-                                context);
+                                context, duration: 4);
                           } on FirebaseAuthException catch (e) {
                             // can enhance it & make it reauthentica user
                             if (e.code == 'requires-recent-login') {

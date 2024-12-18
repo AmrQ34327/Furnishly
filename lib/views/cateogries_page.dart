@@ -47,16 +47,40 @@ class CategoriesPage extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         // Handle item tap
-                        Navigator.pushNamed(context, '/viewProducts', arguments: category.title);
+                        Navigator.pushNamed(context, '/viewProducts',
+                            arguments: category.title);
                       },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Image.asset(
-                              category.imagePath,
-                              width: width * 0.4, // make it adaptive
-                              height: height * 0.2,
-                              fit: BoxFit.fill,
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors
+                                      .grey.shade300, // Light border color
+                                  width: 2, // Border width
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    16.0), // Rounded corners
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black
+                                        .withOpacity(0.2), // Light shadow
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3), // Shadow direction
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16.0),
+                                child: Image.asset(
+                                  category.imagePath,
+                                  width: width * 0.4, // make it adaptive
+                                  height: height * 0.2,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
                             ),
                             SizedBox(height: 10),
                             Text(

@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:furnishly/controller/controller.dart';
 import 'package:provider/provider.dart';
 import '../model/model.dart';
 import 'shared.dart';

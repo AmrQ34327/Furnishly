@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/model/model.dart' as model;
 import 'package:furnishly/views/edit_profile.dart';
+import 'package:furnishly/views/view_single_product.dart';
 import 'package:furnishly/views/view_products.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:furnishly/views/account_page.dart';
@@ -13,14 +14,22 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'views/sign_up_page.dart';
 import 'model/fakedata.dart';
+import 'controller/controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ChangeNotifierProvider(
-      create: (_) => model.UserProvider(), child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -89,29 +98,31 @@ class _MyAppState extends State<MyApp> {
               WidgetStatePropertyAll(Color.fromARGB(255, 255, 255, 255)),
           backgroundColor: WidgetStatePropertyAll(Color(0xFF556B2F)),
         )),
-      chipTheme: const ChipThemeData(
-        shape: StadiumBorder(),
-          backgroundColor:  Color(0xFF2C3E50), 
-          selectedColor: Color(0xFFB58D4B),   
-          disabledColor: Colors.white,    
+        chipTheme: const ChipThemeData(
+          shape: StadiumBorder(),
+          backgroundColor: Color(0xFF2C3E50),
+          selectedColor: Color(0xFFB58D4B),
+          disabledColor: Colors.white,
           padding: EdgeInsets.all(4.0), // make it adaptive
           labelStyle: TextStyle(
             color: Colors.white, // Text color inside chip
             fontWeight: FontWeight.bold,
             fontSize: 12,
           ),
-          elevation: 4, 
-        ),),
+          elevation: 4,
+        ),
+      ),
       initialRoute: '/home',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home': (context) => const MyHomePage(),
         '/account': (context) => AccountPage(),
-        '/cart': (context) => const CartPage(),
+        '/cart': (context) =>  CartPage(),
         '/categories': (context) => const CategoriesPage(),
         '/signup': (context) => const SignUpPage(),
         '/editProfile': (context) => EditAccountPage(),
         '/viewProducts': (context) => ViewProducts(),
+        '/viewSingleProduct': (context) => ViewSingleProduct(),
       },
     );
   }
@@ -159,11 +170,20 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text("Discover", style: TextStyle(
-                    color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-                    fontSize: Theme.of(context).primaryTextTheme.bodyLarge!.fontSize,
-                    fontWeight: Theme.of(context).primaryTextTheme.bodyMedium!.fontWeight,
-                  ),
+                  Text(
+                    "Discover",
+                    style: TextStyle(
+                      color:
+                          Theme.of(context).primaryTextTheme.bodyMedium!.color,
+                      fontSize: Theme.of(context)
+                          .primaryTextTheme
+                          .bodyLarge!
+                          .fontSize,
+                      fontWeight: Theme.of(context)
+                          .primaryTextTheme
+                          .bodyMedium!
+                          .fontWeight,
+                    ),
                   ),
                   SizedBox(height: 20),
                   // the search bar
@@ -227,40 +247,47 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: 'Hot Deals',
                           showMoreFunction: () {
                             // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "showDiscount");
                           },
                           shownFilteredProductsList: discountedProductsList),
                       ShowProducts(
                           title: "Office",
                           showMoreFunction: () {
-                            // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "Office");
                           },
                           shownFilteredProductsList:
                               showProductsByCategory("Office")),
                       ShowProducts(
                           title: "Living Room",
                           showMoreFunction: () {
-                            // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "Living Room");
                           },
                           shownFilteredProductsList:
                               showProductsByCategory("Living Room")),
                       ShowProducts(
                           title: "Dining Room",
                           showMoreFunction: () {
-                            // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "Dining Room");
                           },
                           shownFilteredProductsList:
                               showProductsByCategory("Dining Room")),
                       ShowProducts(
                           title: "Bedroom",
                           showMoreFunction: () {
-                            // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "Bedroom");
                           },
                           shownFilteredProductsList:
                               showProductsByCategory("Bedroom")),
                       ShowProducts(
                           title: "Outdoors",
                           showMoreFunction: () {
-                            // show more logic
+                            Navigator.pushNamed(context, '/viewProducts',
+                                arguments: "Outdoors");
                           },
                           shownFilteredProductsList:
                               showProductsByCategory("Outdoors")),
@@ -330,35 +357,62 @@ class ShowProducts extends StatelessWidget {
               final product = shownFilteredProductsList[index];
               return Container(
                 padding: EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // or center
-                  children: [
-                    Image.asset(
-                      product.imagePath,
-                      width: width * 0.22, // make it adaptive
-                      height: height * 0.15,
-                      fit: BoxFit.fill,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      product.title,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: TextStyle(
-                        fontSize: Theme.of(context)
-                            .primaryTextTheme
-                            .bodySmall!
-                            .fontSize,
-                        fontWeight: Theme.of(context)
-                            .primaryTextTheme
-                            .bodySmall!
-                            .fontWeight,
-                        color:
-                            Theme.of(context).primaryTextTheme.bodySmall!.color,
+                child: GestureDetector(
+                  onTap: () {
+                    // open prodcut
+                    Navigator.pushNamed(context, '/viewSingleProduct',
+                        arguments: product.id);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(16.0), // Rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.black.withOpacity(0.2), // Light shadow
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // Shadow direction
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: Image.asset(
+                            product.imagePath,
+                            width: width * 0.22,
+                            height: height * 0.13,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20) // change to adapt
-                  ],
+                      SizedBox(height: 8),
+                      Text(
+                        product.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .fontSize,
+                          fontWeight: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .fontWeight,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
+                      ),
+                      SizedBox(height: 20) // change to adapt
+                    ],
+                  ),
                 ),
               );
             } else {
