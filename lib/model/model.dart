@@ -21,47 +21,8 @@ class Account {
   });
 }
 
-// transfare to controller section in the end
-class UserProvider extends ChangeNotifier {
-  Account? _currentUser;
 
-  // Getter to access the user
-  Account? get currentUser => _currentUser;
 
-  void setUser(Account user) {
-    _currentUser = user;
-    notifyListeners();
-  }
-
-  void updateUsername(String newUsername) {
-    _currentUser!.username = newUsername;
-    notifyListeners();
-  }
-
-  // this will probably be of no use
-  void updateEmail(String newEmail) {
-    _currentUser!.email = newEmail;
-    notifyListeners();
-  }
-
-  void setPassword(String newPassword) {
-    _currentUser!.password = newPassword;
-    notifyListeners();
-  }
-
-  void setPhoneNumber(String newPhoneNumber) {
-    _currentUser!.phoneNumber = newPhoneNumber;
-    notifyListeners();
-  }
-
-  // and changes main address
-  void addAddress(String address) {
-    _currentUser!.mainAddress = address;
-    notifyListeners();
-  }
-
-  // To-D0 Make the methods add to wishlist and add to orders
-}
 
 class Product {
   String id;
@@ -107,8 +68,9 @@ class CartItem extends Product {
       required super.discount,
       required super.quantity,
       required super.category});
-  // dont forget the discount
-  double get discountSubtract => price * discount;
-  double get totalPrice =>
-      (hasDiscount ? price - discountSubtract : price) * quantity;
+
+  double get totalPrice => hasDiscount ? price - discount : price * quantity;
 }
+
+
+

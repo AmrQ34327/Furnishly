@@ -447,7 +447,8 @@ class EditInfoWidget extends StatelessWidget {
   }
 }
 
-void showSuccesDialog(String message, BuildContext context) {
+void showSuccesDialog(String message, BuildContext context,
+    {int duration = 3}) {
   AwesomeDialog(
           context: context,
           dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -467,7 +468,7 @@ void showSuccesDialog(String message, BuildContext context) {
                 Theme.of(context).primaryTextTheme.bodyMedium!.fontWeight,
             fontSize: Theme.of(context).primaryTextTheme.bodySmall!.fontSize,
           ),
-          autoHide: const Duration(seconds: 4))
+          autoHide: Duration(seconds: duration))
       .show();
 }
 

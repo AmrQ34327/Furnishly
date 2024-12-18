@@ -4,9 +4,9 @@ import 'package:furnishly/model/model.dart';
 import 'package:furnishly/views/shared.dart';
 
 class ViewProducts extends StatefulWidget {
-  final Set<String>? selectedCategories; // remove???
-
-  const ViewProducts({super.key, this.selectedCategories});
+  const ViewProducts({
+    super.key,
+  });
 
   @override
   State<ViewProducts> createState() => _ViewProductsState();
@@ -18,6 +18,7 @@ class _ViewProductsState extends State<ViewProducts> {
   final TextEditingController searchBarController = TextEditingController();
   List<dynamic> shownProducts = productList;
   Set<String> selectedCategories = {};
+  var showeDiscountedProducts = false;
 
   bool isinitialized = false;
 
@@ -27,9 +28,11 @@ class _ViewProductsState extends State<ViewProducts> {
     if (!isinitialized) {
       final category = ModalRoute.of(context)!.settings.arguments as String?;
       setState(() {
-        if (category != null) {
+        if (category != null && category != 'showDiscount') {
           shownProducts = showProductsByCategory(category);
           selectedCategories.add(category);
+        } else if (category != null && category == 'showDiscount') {
+          showeDiscountedProducts = true;
         } else {
           shownProducts = productList;
         }
@@ -56,13 +59,16 @@ class _ViewProductsState extends State<ViewProducts> {
         selectedCategories.remove(category);
       }
 
-      if (selectedCategories.isEmpty) {
+      // Reapply both filters (category and "On Sale")
+      if (selectedCategories.isEmpty && !showeDiscountedProducts) {
         shownProducts = productList;
       } else {
-        shownProducts = productList
-            .where((product) =>
-                selectedCategories.contains(product.category.title))
-            .toList();
+        shownProducts = productList.where((product) {
+          final categoryMatch = selectedCategories.isEmpty ||
+              selectedCategories.contains(product.category.title);
+          final saleMatch = !showeDiscountedProducts || product.hasDiscount;
+          return categoryMatch && saleMatch;
+        }).toList();
       }
     });
   }
@@ -167,6 +173,56 @@ class _ViewProductsState extends State<ViewProducts> {
                     updateFilter("Outdoors", selected);
                   }),
             ]),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 23.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "On Sale",
+                    style: TextStyle(
+                        fontSize: width * 0.04,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context)
+                            .primaryTextTheme
+                            .bodySmall!
+                            .color),
+                  ),
+                  Checkbox(
+                    value: showeDiscountedProducts,
+                    onChanged: (value) {
+                      setState(() {
+                        showeDiscountedProducts = value!;
+                        // When "On Sale" is toggled, apply both filters (category and "On Sale")
+                        if (selectedCategories.isEmpty) {
+                          // If no categories are selected, just filter by "On Sale"
+                          if (showeDiscountedProducts) {
+                            shownProducts = productList
+                                .where((product) => product.hasDiscount)
+                                .toList();
+                          } else {
+                            shownProducts = productList;
+                          }
+                        } else {
+                          // Apply both "On Sale" and category filters
+                          shownProducts = productList.where((product) {
+                            final categoryMatch = selectedCategories
+                                .contains(product.category.title);
+                            final saleMatch =
+                                !showeDiscountedProducts || product.hasDiscount;
+                            return categoryMatch && saleMatch;
+                          }).toList();
+                        }
+                      });
+                    },
+                    checkColor: Colors.white,
+                    activeColor:
+                        Theme.of(context).primaryTextTheme.bodySmall!.color,
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20.0),
             Expanded(
               child: GridView.builder(
@@ -182,15 +238,35 @@ class _ViewProductsState extends State<ViewProducts> {
                   return GestureDetector(
                     onTap: () {
                       // Handle item tap using it's ID
+                      Navigator.pushNamed(context, '/viewSingleProduct',
+                          arguments: product.id);
                     },
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Image.asset(
-                            product.imagePath,
-                            width: width * 0.4, // make it adaptive
-                            height: height * 0.14,
-                            fit: BoxFit.fill,
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  16.0), // Rounded corners
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black
+                                      .withOpacity(0.2), // Light shadow
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3), // Shadow direction
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Image.asset(
+                                product.imagePath,
+                                width: width * 0.4, // make it adaptive
+                                height: height * 0.14,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
                           ),
                           SizedBox(height: 10),
                           Text(
