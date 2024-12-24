@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
 import 'package:furnishly/model/model.dart';
@@ -18,88 +19,167 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
         appBar: MyAppBar(),
         body: SafeArea(
-          child: SingleChildScrollView(
-            // probably don't need that
-            child: Padding(
-              padding: const EdgeInsets.all(9.0),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 13),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 15.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).appBarTheme.backgroundColor,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20)),
-                    ),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text(
-                          'My Cart',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: Theme.of(context)
-                                .primaryTextTheme
-                                .bodyLarge!
-                                .fontWeight,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color,
-                          ),
+          child: Padding(
+            padding: const EdgeInsets.all(9.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 13),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 15.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).appBarTheme.backgroundColor,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20)),
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        'My Cart',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: Theme.of(context)
+                              .primaryTextTheme
+                              .bodyLarge!
+                              .fontWeight,
+                          color: Theme.of(context)
+                              .appBarTheme
+                              .titleTextStyle!
+                              .color,
                         ),
                       ),
                     ),
                   ),
-                  context.read<ProductProvider>().isCartEmpty
-                      ? Padding(
-                          padding: EdgeInsets.only(top: height * 0.3),
-                          child: Center(
-                              child: Text(
-                            'Your cart is empty',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
+                ),
+                context.read<ProductProvider>().isCartEmpty
+                    ? Padding(
+                        padding: EdgeInsets.only(top: height * 0.3),
+                        child: Center(
+                            child: Text(
+                          'Your cart is empty',
+                          style : Theme.of(context).primaryTextTheme.bodyMedium,
+                        )),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                            itemCount:
+                                context.watch<ProductProvider>().cart.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final product =
+                                  Provider.of<ProductProvider>(context)
+                                      .cart[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CartTile2(
+                                  cartItem: product,
+                                  productQuantity: product.quantity,
+                                ),
+                              );
+                            }),
+                      ),
+                // new widgets here
+                Provider.of<ProductProvider>(context).isCartEmpty
+                    ? SizedBox()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Discount: ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                ),
+                                Text(
+                                  '- ${Provider.of<ProductProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                )
+                              ],
                             ),
-                          )),
-                        )
-                      : ListView.builder(
-                          itemCount:
-                              context.watch<ProductProvider>().cart.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final product =
-                                Provider.of<ProductProvider>(context)
-                                    .cart[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CartTile2(
-                                cartItem: product,
-                                productQuantity: product.quantity,
-                              ),
-                            );
-                          }),
-                  // new widgets here
-                  ElevatedButton(
-                      onPressed: () {
-                        // open a checkout window
-                      },
-                      child: Text("Proceed to checkout"))
-                ],
-              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total: ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                ),
+                                Text(
+                                  '\$ ${Provider.of<ProductProvider>(context, listen: false).totalPrice.toStringAsFixed(2)} ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                )
+                              ],
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  // open a checkout window
+                                  if (FirebaseAuth.instance.currentUser !=
+                                      null) {
+                                    Navigator.pushNamed(context, '/checkout');
+                                  } else {
+                                    showFailureDialog('Not Signed in', context);
+                                  }
+                                },
+                                child: Text("Proceed to checkout"))
+                          ],
+                        ),
+                      ),
+              ],
             ),
           ),
         ),
@@ -111,8 +191,13 @@ class _CartPageState extends State<CartPage> {
 class CartTile2 extends StatefulWidget {
   final CartItem cartItem;
   int productQuantity;
+  final bool showIncreaseDecreaseQuantity;
 
-  CartTile2({super.key, required this.cartItem, required this.productQuantity});
+  CartTile2(
+      {super.key,
+      required this.cartItem,
+      required this.productQuantity,
+      this.showIncreaseDecreaseQuantity = true});
 
   @override
   State<CartTile2> createState() => _CartTileState2();
@@ -131,7 +216,7 @@ class _CartTileState2 extends State<CartTile2> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: EdgeInsets.symmetric(vertical: 3.0),
       elevation: 4.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -140,65 +225,76 @@ class _CartTileState2 extends State<CartTile2> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           // increase decrease quantity column
-          SizedBox(
-            width: 40,
-            child: Column(
-              children: [
-                IconButton(
-                  iconSize: 18,
-                  color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-                  onPressed: () {
-                    setState(() {
-                      widget.productQuantity++;
-                      quantityController.text =
-                          widget.productQuantity.toString();
-                      Provider.of<ProductProvider>(context, listen: false)
-                          .updateQuantity(
-                              widget.cartItem, widget.productQuantity);
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                ),
-                SizedBox(
-                  width: widget.productQuantity > 9 ? 25 : 17,
-                  height: 17,
-                  child: TextField(
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    controller: quantityController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 5), // make it adaptive
-                      fillColor: Color.fromARGB(255, 6, 68, 119),
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
+          widget.showIncreaseDecreaseQuantity
+              ? SizedBox(
+                  width: 40,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        iconSize: 18,
+                        color: Theme.of(context)
+                            .primaryTextTheme
+                            .bodyMedium!
+                            .color,
+                        onPressed: () {
+                          setState(() {
+                            widget.productQuantity++;
+                            quantityController.text =
+                                widget.productQuantity.toString();
+                            Provider.of<ProductProvider>(context, listen: false)
+                                .updateQuantity(
+                                    widget.cartItem, widget.productQuantity);
+                          });
+                        },
+                        icon: const Icon(Icons.add),
+                      ),
+                      SizedBox(
+                        width: widget.productQuantity > 9 ? 25 : 17,
+                        height: 17,
+                        child: TextField(
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                          controller: quantityController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 5), // make it adaptive
+                            fillColor: Color.fromARGB(255, 6, 68, 119),
+                            filled: true,
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        iconSize: 18,
+                        color: Theme.of(context)
+                            .primaryTextTheme
+                            .bodyMedium!
+                            .color,
+                        onPressed: () {
+                          setState(() {
+                            if (widget.productQuantity > 1) {
+                              widget.productQuantity--;
+                              quantityController.text =
+                                  widget.productQuantity.toString();
+                              Provider.of<ProductProvider>(context,
+                                      listen: false)
+                                  .updateQuantity(
+                                      widget.cartItem, widget.productQuantity);
+                            }
+                          });
+                        },
+                        icon: const Icon(Icons.remove),
+                      ),
+                    ],
                   ),
+                )
+              : const SizedBox(
+                  width: 12,
                 ),
-                IconButton(
-                  iconSize: 18,
-                  color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-                  onPressed: () {
-                    setState(() {
-                      if (widget.productQuantity > 1) {
-                        widget.productQuantity--;
-                        quantityController.text =
-                            widget.productQuantity.toString();
-                        Provider.of<ProductProvider>(context, listen: false)
-                            .updateQuantity(
-                                widget.cartItem, widget.productQuantity);
-                      }
-                    });
-                  },
-                  icon: const Icon(Icons.remove),
-                ),
-              ],
-            ),
-          ),
           // image
           SizedBox(
             height: 70,
@@ -257,12 +353,19 @@ class _CartTileState2 extends State<CartTile2> {
                     iconSize: 18,
                     color: Theme.of(context).primaryTextTheme.bodySmall!.color,
                     onPressed: () {
-                      // delete the entry from the cart
-                      Provider.of<ProductProvider>(context, listen: false)
-                          .removeFromCart(widget.cartItem.id);
-                      setState(() {});
+                      if (widget.showIncreaseDecreaseQuantity) {
+                        // delete entry from cart
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .removeFromCart(widget.cartItem.id);
+                        setState(() {});
+                      } else {
+                        // remove entry from wishlist
+                        Provider.of<UserProvider>(context, listen: false)
+                            .removeFromWishlist(widget.cartItem.id);
+                        setState(() {});
+                      }
                     },
-                    icon: Icon(Icons.close)),
+                    icon: const Icon(Icons.close)),
               ),
               SizedBox(
                 height: 9,

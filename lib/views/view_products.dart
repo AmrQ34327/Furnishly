@@ -33,6 +33,7 @@ class _ViewProductsState extends State<ViewProducts> {
           selectedCategories.add(category);
         } else if (category != null && category == 'showDiscount') {
           showeDiscountedProducts = true;
+           shownProducts = productList.where((product) => product.hasDiscount).toList();
         } else {
           shownProducts = productList;
         }
@@ -140,7 +141,7 @@ class _ViewProductsState extends State<ViewProducts> {
                             }))
                 : const SizedBox(),
             // add new widgets here
-            Wrap(spacing: 5.0, children: [
+           query.isEmpty? Wrap(spacing: 5.0, children: [
               FilterChip(
                   label:
                       const Text("Office"), // blue background with yellow text
@@ -172,11 +173,11 @@ class _ViewProductsState extends State<ViewProducts> {
                   onSelected: (bool selected) {
                     updateFilter("Outdoors", selected);
                   }),
-            ]),
+            ]): SizedBox(),
             SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 23.0),
-              child: Row(
+              child: query.isEmpty? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -221,7 +222,7 @@ class _ViewProductsState extends State<ViewProducts> {
                         Theme.of(context).primaryTextTheme.bodySmall!.color,
                   ),
                 ],
-              ),
+              ): const SizedBox(),
             ),
             const SizedBox(height: 20.0),
             Expanded(
@@ -244,28 +245,12 @@ class _ViewProductsState extends State<ViewProducts> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  16.0), // Rounded corners
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black
-                                      .withOpacity(0.2), // Light shadow
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3), // Shadow direction
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Image.asset(
-                                product.imagePath,
-                                width: width * 0.4, // make it adaptive
-                                height: height * 0.14,
-                                fit: BoxFit.fill,
-                              ),
+                          MyImageContainer(
+                            child: Image.asset(
+                              product.imagePath,
+                              width: width * 0.4, // make it adaptive
+                              height: height * 0.14,
+                              fit: BoxFit.fill,
                             ),
                           ),
                           SizedBox(height: 10),
@@ -307,7 +292,7 @@ class _ViewProductsState extends State<ViewProducts> {
                               ),
                             ),
                           ),
-
+        
                           // add new widgets here
                         ]),
                   );

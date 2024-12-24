@@ -2,15 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:furnishly/model/model.dart';
 import 'dart:core';
 
+import 'package:provider/provider.dart';
+
 class UserProvider extends ChangeNotifier {
   Account? _currentUser;
 
   // Getter to access the user
   Account? get currentUser => _currentUser;
 
+  get wishlist => _currentUser!.wishlist;
+
+  get orderList => _currentUser!.orderList;
+
   void setUser(Account user) {
     _currentUser = user;
     notifyListeners();
+  }
+
+  void makeOrder(Order order) {
+    _currentUser!.orderList.add(order);
+    notifyListeners();
+  }
+
+  void addToWishlist(CartItem item) {
+    _currentUser!.wishlist.add(item);
+    notifyListeners();
+  }
+
+  void removeFromWishlist(String ID) {
+    _currentUser!.wishlist.removeWhere((item) => item.id == ID);
+    notifyListeners();
+  }
+
+  bool isItemInWishList(String ID) {
+    var productFound = false;
+    // search wishlist
+    for (var item in _currentUser!.wishlist) {
+      if (item.id == ID) {
+        productFound == true;
+        break;
+      } else {
+        productFound == false;
+      }
+    }
+    return productFound;
   }
 
   void updateUsername(String newUsername) {
@@ -66,9 +101,27 @@ class ProductProvider extends ChangeNotifier {
   double get totalPrice {
     double total = 0;
     for (var item in cart) {
-      total += item.price;
+      total += item.totalPrice;
     }
     return total;
+  }
+
+  double get subtotal {
+    double subtotal = 0;
+    for (var item in cart) {
+      subtotal += item.price;
+    }
+    return subtotal;
+  }
+
+  double get totalDiscount {
+    double totalDiscount = 0;
+    for (var item in cart) {
+      if (item.hasDiscount) {
+        totalDiscount += item.discount;
+      }
+    }
+    return totalDiscount;
   }
 
   void clearCart() {
@@ -76,9 +129,33 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void cartCheckout() {
-    // subtract order quantity
-    // add order to my orders list
-    // clear cart
+  void decreaseOrderQuantity(List cart, List productsList) {
+    // iterate through cart and get each item id and quantity
+    for (var cartItem in cart) {
+      var productID = cartItem.id;
+      var productQuantity = cartItem.quantity;
+      for (var product in productsList) {
+        // decrease each item quanitty in products list based on it's id
+        if (product.id == productID) {
+          product.quantity = product.quantity - productQuantity;
+          break;
+        }
+      }
+    }
   }
 }
+
+ bool isItemInWishList(BuildContext context, String ID) {
+    var productFound = false;
+    // search wishlist
+    for (var item
+        in Provider.of<UserProvider>(context, listen: false).wishlist) {
+      if (item.id == ID) {
+        productFound = true;
+        break;
+      } else {
+        productFound = false;
+      }
+    }
+    return productFound;
+  }

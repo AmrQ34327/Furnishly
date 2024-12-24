@@ -21,15 +21,7 @@ class CategoriesPage extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   'Categories',
-                  style: TextStyle(
-                    fontSize:
-                        Theme.of(context).primaryTextTheme.bodyLarge!.fontSize,
-                    fontWeight: Theme.of(context)
-                        .primaryTextTheme
-                        .bodyLarge!
-                        .fontWeight,
-                    color: Theme.of(context).primaryTextTheme.bodyLarge!.color,
-                  ),
+                  style : Theme.of(context).primaryTextTheme.bodyLarge,
                 ),
               ),
               SizedBox(height: height * 0.03),

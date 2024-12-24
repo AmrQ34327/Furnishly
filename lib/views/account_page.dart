@@ -54,20 +54,7 @@ class _AccountPageState extends State<AccountPage> {
                           Text(
                             'Sign In',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyLarge!
-                                  .fontSize,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyLarge!
-                                  .fontWeight,
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyLarge!
-                                  .color,
-                            ),
+                            style : Theme.of(context).primaryTextTheme.bodyLarge,
                           ),
                           Padding(
                             padding: EdgeInsets.all(height * 0.015),
@@ -77,20 +64,7 @@ class _AccountPageState extends State<AccountPage> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Text("Email",
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .color,
-                                        fontWeight: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .fontWeight,
-                                        fontSize: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .fontSize,
-                                      )),
+                                      style : Theme.of(context).primaryTextTheme.bodyMedium),
                                 ),
                                 TextFormField(
                                   validator: (val) {
@@ -110,20 +84,7 @@ class _AccountPageState extends State<AccountPage> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Text("Password",
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .color,
-                                        fontWeight: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .fontWeight,
-                                        fontSize: Theme.of(context)
-                                            .primaryTextTheme
-                                            .bodyMedium!
-                                            .fontSize,
-                                      )),
+                                      style : Theme.of(context).primaryTextTheme.bodyMedium),
                                 ),
                                 StatefulBuilder(
                                     builder: (context, StateSetter setState) {
@@ -170,36 +131,26 @@ class _AccountPageState extends State<AccountPage> {
                                               children: [
                                                 Text(
                                                   "Enter Email",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryTextTheme
-                                                          .bodyMedium!
-                                                          .color,
-                                                      fontWeight:
-                                                          Theme.of(context)
-                                                              .primaryTextTheme
-                                                              .bodyMedium!
-                                                              .fontWeight,
-                                                      fontSize:
-                                                          Theme.of(context)
-                                                              .primaryTextTheme
-                                                              .bodyMedium!
-                                                              .fontSize),
+                                                  style : Theme.of(context).primaryTextTheme.bodyMedium,
                                                 ),
                                                 SizedBox(
                                                     height: height * 0.006),
-                                                TextField(
-                                                  controller:
-                                                      forgotPasswordController,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          border:
-                                                              OutlineInputBorder(),
-                                                          hintStyle: TextStyle(
-                                                              color:
-                                                                  Colors.grey),
-                                                          hintText:
-                                                              'Enter Email'),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: TextField(
+                                                    controller:
+                                                        forgotPasswordController,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                            hintStyle: TextStyle(
+                                                                color: Colors
+                                                                    .grey),
+                                                            hintText:
+                                                                'Enter Email'),
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                     height: height * 0.006),
@@ -334,27 +285,27 @@ class _AccountPageState extends State<AccountPage> {
                   )
                 : ListView(
                     children: [
-                      // for testing purpose only
-                      Text("Welcome ${currentUser?.username}"),
                       ListTile(
                         leading: Icon(
                           Icons.edit,
                           color: Theme.of(context)
-                              .appBarTheme
-                              .titleTextStyle!
+                              .primaryTextTheme
+                              .bodySmall!
                               .color,
                         ),
-                        trailing: Icon(Icons.arrow_forward_ios,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
                         title: Text(
                           "Edit Profile",
                           style: TextStyle(
                             color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
+                                .primaryTextTheme
+                                .bodySmall!
                                 .color,
                             fontWeight: Theme.of(context)
                                 .primaryTextTheme
@@ -367,7 +318,6 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                         ),
                         onTap: () {
-                          // here will take the user to edit account info
                           Navigator.pushNamed(context, '/editProfile');
                         },
                       ),
@@ -375,21 +325,23 @@ class _AccountPageState extends State<AccountPage> {
                         leading: Icon(
                           Icons.favorite,
                           color: Theme.of(context)
-                              .appBarTheme
-                              .titleTextStyle!
+                              .primaryTextTheme
+                              .bodySmall!
                               .color,
                         ),
-                        trailing: Icon(Icons.arrow_forward_ios,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
                         title: Text(
                           "Wishlist",
                           style: TextStyle(
                             color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
+                                .primaryTextTheme
+                                .bodySmall!
                                 .color,
                             fontWeight: Theme.of(context)
                                 .primaryTextTheme
@@ -402,26 +354,30 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                         ),
                         onTap: () {
-                          // here will take the user to wishlist page
+                          Navigator.pushNamed(context, '/wishlist');
                         },
                       ),
                       ListTile(
-                        leading: Icon(Icons.assignment,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
-                        trailing: Icon(Icons.arrow_forward_ios,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
+                        leading: Icon(
+                          Icons.assignment,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
                         title: Text(
                           "My Orders",
                           style: TextStyle(
                             color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
+                                .primaryTextTheme
+                                .bodySmall!
                                 .color,
                             fontWeight: Theme.of(context)
                                 .primaryTextTheme
@@ -434,26 +390,30 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                         ),
                         onTap: () {
-                          // here will take the user to my orders page
+                          Navigator.pushNamed(context, '/myOrders');
                         },
                       ),
                       ListTile(
-                        leading: Icon(Icons.logout,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
-                        trailing: Icon(Icons.arrow_forward_ios,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
-                                .color),
+                        leading: Icon(
+                          Icons.logout,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color,
+                        ),
                         title: Text(
                           "Sign Out",
                           style: TextStyle(
                             color: Theme.of(context)
-                                .appBarTheme
-                                .titleTextStyle!
+                                .primaryTextTheme
+                                .bodySmall!
                                 .color,
                             fontWeight: Theme.of(context)
                                 .primaryTextTheme

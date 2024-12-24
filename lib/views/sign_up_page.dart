@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
@@ -39,15 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 Text(
                   'Sign Up',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize:
-                        Theme.of(context).primaryTextTheme.bodyLarge!.fontSize,
-                    fontWeight: Theme.of(context)
-                        .primaryTextTheme
-                        .bodyLarge!
-                        .fontWeight,
-                    color: Theme.of(context).primaryTextTheme.bodyLarge!.color,
-                  ),
+                 style : Theme.of(context).primaryTextTheme.bodyLarge
                 ),
                 Padding(
                   padding: EdgeInsets.all(height * 0.015),
@@ -56,26 +47,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     children: [
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Text("Username",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
-                            )),
+                        child: Text("Name",
+                            style : Theme.of(context).primaryTextTheme.bodyMedium
+                            ),
                       ),
                       TextFormField(
                         controller: usernameController,
                         decoration: const InputDecoration(
-                            hintText: 'Enter your username',
+                            hintText: 'Enter your name',
                             hintStyle: TextStyle(color: Colors.grey),
                             border: OutlineInputBorder()),
                       ),
@@ -85,20 +64,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Email",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
-                            )),
+                            style : Theme.of(context).primaryTextTheme.bodyMedium
+                            ),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
@@ -120,20 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Password",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
-                            )),
+                            style : Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       StatefulBuilder(builder: (context, StateSetter setState) {
                         return TextFormField(
@@ -180,20 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Phone Number",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
-                            )),
+                            style : Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.phone,
@@ -222,20 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Address",
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .color,
-                              fontWeight: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontWeight,
-                              fontSize: Theme.of(context)
-                                  .primaryTextTheme
-                                  .bodyMedium!
-                                  .fontSize,
-                            )),
+                            style : Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.streetAddress,
@@ -260,10 +188,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                     .createUserWithEmailAndPassword(
                                   email: emailController.text,
                                   password: passwordController.text,
+                                  
                                 );
                                 var currentProfile = Account(
                                   username: usernameController.text,
                                   email: emailController.text,
+                                  wishlist: [],
+                                  orderList: [],
                                 );
                                 Provider.of<UserProvider>(context,
                                         listen: false)

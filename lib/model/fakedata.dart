@@ -8,10 +8,11 @@ var productList = [
     imagePath: "assets/images/modern_sofa.jpg",
     price: 899.99,
     hasDiscount: true,
-    discount: 10.0,
-    quantity: 25,
+    discount: 130.0,
+    quantity: 25, 
     category: Category(
-        title: "Living Room", imagePath: "assets/images/categories/living_room.jpg"),
+        title: "Living Room",
+        imagePath: "assets/images/categories/living_room.jpg"),
   ),
   Product(
     id: "2",
@@ -23,7 +24,8 @@ var productList = [
     discount: 0.0,
     quantity: 15,
     category: Category(
-        title: "Living Room", imagePath: "assets/images/categories/living_room.jpg"),
+        title: "Living Room",
+        imagePath: "assets/images/categories/living_room.jpg"),
   ),
   Product(
     id: "3",
@@ -35,7 +37,8 @@ var productList = [
     discount: 15.0,
     quantity: 10,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "4",
@@ -47,7 +50,8 @@ var productList = [
     discount: 0.0,
     quantity: 5,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "5",
@@ -58,8 +62,8 @@ var productList = [
     hasDiscount: true,
     discount: 20.0,
     quantity: 8,
-    category:
-        Category(title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
+    category: Category(
+        title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
   Product(
     id: "6",
@@ -71,7 +75,8 @@ var productList = [
     discount: 0.0,
     quantity: 12,
     category: Category(
-        title: "Living Room", imagePath: "assets/images/categories/living_room.jpg"),
+        title: "Living Room",
+        imagePath: "assets/images/categories/living_room.jpg"),
   ),
   Product(
     id: "7",
@@ -80,10 +85,10 @@ var productList = [
     imagePath: "assets/images/nightstand.jpg",
     price: 129.99,
     hasDiscount: true,
-    discount: 5.0,
+    discount: 35.0,
     quantity: 50,
-    category:
-        Category(title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
+    category: Category(
+        title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
   Product(
     id: "8",
@@ -94,8 +99,8 @@ var productList = [
     hasDiscount: false,
     discount: 0.0,
     quantity: 20,
-    category:
-        Category(title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
+    category: Category(
+        title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
   Product(
     id: "9",
@@ -106,8 +111,8 @@ var productList = [
     hasDiscount: true,
     discount: 10.0,
     quantity: 60,
-    category:
-        Category(title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
+    category: Category(
+        title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
   Product(
     id: "10",
@@ -116,10 +121,10 @@ var productList = [
     imagePath: "assets/images/wardrobe.jpg",
     price: 799.99,
     hasDiscount: true,
-    discount: 15.0,
+    discount: 130.0,
     quantity: 10,
-    category:
-        Category(title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
+    category: Category(
+        title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
   Product(
     id: "11",
@@ -128,10 +133,11 @@ var productList = [
     imagePath: "assets/images/dining_table_set.jpg",
     price: 749.99,
     hasDiscount: true,
-    discount: 15.0,
+    discount: 150.0,
     quantity: 10,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "12",
@@ -143,7 +149,8 @@ var productList = [
     discount: 0.0,
     quantity: 30,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "13",
@@ -152,10 +159,11 @@ var productList = [
     imagePath: "assets/images/buffet_cabinet.jpg",
     price: 599.99,
     hasDiscount: true,
-    discount: 10.0,
+    discount: 50.0,
     quantity: 15,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "14",
@@ -167,7 +175,8 @@ var productList = [
     discount: 0.0,
     quantity: 25,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "15",
@@ -179,7 +188,8 @@ var productList = [
     discount: 5.0,
     quantity: 40,
     category: Category(
-        title: "Dining Room", imagePath: "assets/images/categories/dining_room.jpg"),
+        title: "Dining Room",
+        imagePath: "assets/images/categories/dining_room.jpg"),
   ),
   Product(
     id: "16",
@@ -191,8 +201,8 @@ var productList = [
     hasDiscount: true,
     discount: 20.0,
     quantity: 30,
-    category:
-        Category(title: "Office", imagePath: "assets/images/categories/office.jpg"),
+    category: Category(
+        title: "Office", imagePath: "assets/images/categories/office.jpg"),
   ),
   Product(
     id: "17",
@@ -203,8 +213,8 @@ var productList = [
     hasDiscount: false,
     discount: 0.0,
     quantity: 20,
-    category:
-        Category(title: "Office", imagePath: "assets/images/categories/office.jpg"),
+    category: Category(
+        title: "Office", imagePath: "assets/images/categories/office.jpg"),
   ),
   Product(
     id: "18",
@@ -213,10 +223,10 @@ var productList = [
     imagePath: "assets/images/filing_cabinet.jpg",
     price: 199.99,
     hasDiscount: true,
-    discount: 10.0,
+    discount: 50.0,
     quantity: 40,
-    category:
-        Category(title: "Office", imagePath: "assets/images/categories/office.jpg"),
+    category: Category(
+        title: "Office", imagePath: "assets/images/categories/office.jpg"),
   ),
   Product(
     id: "19",
@@ -227,8 +237,8 @@ var productList = [
     hasDiscount: false,
     discount: 0.0,
     quantity: 25,
-    category:
-        Category(title: "Office", imagePath: "assets/images/categories/office.jpg"),
+    category: Category(
+        title: "Office", imagePath: "assets/images/categories/office.jpg"),
   ),
   Product(
     id: "20",
@@ -237,10 +247,10 @@ var productList = [
     imagePath: "assets/images/white_office_chair.jpg",
     price: 59.99,
     hasDiscount: true,
-    discount: 5.0,
+    discount: 14.0,
     quantity: 50,
-    category:
-        Category(title: "Office", imagePath: "assets/images/categories/office.jpg"),
+    category: Category(
+        title: "Office", imagePath: "assets/images/categories/office.jpg"),
   ),
   Product(
     id: "21",
@@ -261,7 +271,7 @@ var productList = [
     imagePath: "assets/images/hammock.jpg",
     price: 249.99,
     hasDiscount: true,
-    discount: 15.0,
+    discount: 45.0,
     quantity: 20,
     category: Category(
         title: "Outdoors", imagePath: "assets/images/categories/outdoors.jpg"),
@@ -273,8 +283,8 @@ var productList = [
     imagePath: "assets/images/firepit.jpg",
     price: 399.99,
     hasDiscount: true,
-    discount: 60.0,
-    quantity: 15,
+    discount: 80.0,
+    quantity: 55,
     category: Category(
         title: "Outdoors", imagePath: "assets/images/categories/outdoors.jpg"),
   ),
@@ -308,21 +318,77 @@ var discountedProductsList =
     productList.where((product) => product.hasDiscount).toList();
 
 var categoriesList = [
-  Category(title: 'Outdoors', imagePath: 'assets/images/categories/outdoors.jpg'),
+  Category(
+      title: 'Outdoors', imagePath: 'assets/images/categories/outdoors.jpg'),
   Category(title: 'Office', imagePath: 'assets/images/categories/office.jpg'),
   Category(
-      title: 'Dining Room', imagePath: 'assets/images/categories/dining_room.jpg'),
+      title: 'Dining Room',
+      imagePath: 'assets/images/categories/dining_room.jpg'),
   Category(
-      title: 'Living Room', imagePath: 'assets/images/categories/living_room.jpg'),
+      title: 'Living Room',
+      imagePath: 'assets/images/categories/living_room.jpg'),
   Category(title: 'Bedroom', imagePath: 'assets/images/categories/bedroom.jpg'),
 ];
 
-
-
-List showProductsByCategory(String chosenCategory){
-  List<Product> returnedProductsList =
-    productList.where((product) => product.category.title == chosenCategory).toList();
-  return  returnedProductsList;
+List showProductsByCategory(String chosenCategory) {
+  List<Product> returnedProductsList = productList
+      .where((product) => product.category.title == chosenCategory)
+      .toList();
+  return returnedProductsList;
 }
 
+Map<String, double> promoCodes = {
+  'SAVE100': 100.0,
+  'SAVE60': 60.0,
+  'SAVE40': 40.0,
+  'SAVE20': 20.0,
+  'SAVE200': 200.0,
+  'AMR': 300.0,
+};
 
+List<Map<String, String>> faq = [
+  {
+    "question": "1. What is Furnishly?",
+    "answer":
+        "Furnishly is an online store specializing in furniture and home decor, providing stylish and functional options for your living spaces."
+  },
+  {
+    "question": "2. Do you deliver to my location?",
+    "answer": "Furnishly delivers to most locations nationwide."
+  },
+  {
+    "question": "3. What is your return policy?",
+    "answer":
+        "You can return any item within 30 days of purchase, provided it is in its original condition and packaging."
+  },
+  {
+    "question": "4. How long does delivery take?",
+    "answer": "Delivery typically takes 3 business days for most locations."
+  },
+  {
+    "question": "5. Can I cancel my order after placing it?",
+    "answer": "Orders can not be canceled once confirmed."
+  },
+  {
+    "question": "6. Do you offer assembly services?",
+    "answer":
+        "Yes, we offer assembly services for select items. You can add this option during checkout if it's available."
+  },
+  {
+    "question": "7. How can I contact customer support?",
+    "answer": "You can reach our customer support team via email."
+  },
+  {
+    "question": "8. What payment methods do you accept?",
+    "answer": "We accept credit/debit cards and cash on delivery."
+  },
+  {
+    "question": "9. Do you offer any discounts or promotions?",
+    "answer": "Yes, we frequently have sales and discounts."
+  },
+  {
+    "question": "10. Are all products in stock?",
+    "answer":
+        "Stock availability varies. Check the product page for real-time updates on availability or expected restock dates."
+  },
+];

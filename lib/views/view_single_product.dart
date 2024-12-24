@@ -1,9 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
 import 'package:provider/provider.dart';
 import 'shared.dart';
 import 'package:furnishly/model/fakedata.dart';
 import 'package:furnishly/model/model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ViewSingleProduct extends StatefulWidget {
   const ViewSingleProduct({
@@ -17,6 +19,8 @@ class ViewSingleProduct extends StatefulWidget {
 class _ViewSingleProductState extends State<ViewSingleProduct> {
   final TextEditingController quantityController = TextEditingController();
   int productQuantity = 1;
+  bool isFavorited = false;
+  User? _currentUser;
 
   Product getProductData() {
     String productID = ModalRoute.of(context)!.settings.arguments as String;
@@ -30,6 +34,19 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
     super.initState();
     // Initialize the quantityController with the initial product quantity
     quantityController.text = productQuantity.toString();
+    // Defer the wishlist check until the widget is fully initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        setState(() {
+          _currentUser = user;
+          if (_currentUser != null) {
+            // Get the product ID and check if it's in the wishlist
+            var product = getProductData();
+            isFavorited = isItemInWishList(context, product.id);
+          }
+        });
+      });
+    });
   }
 
   @override
@@ -45,26 +62,62 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0), // Rounded corners
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2), // Light shadow
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3), // Shadow direction
+              MyImageContainer(
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      product.imagePath,
+                      width: width * 1,
+                      height: height * 0.3,
+                      fit: BoxFit.fill,
                     ),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: IconButton(
+                          onPressed: () {
+                            if (_currentUser == null) {
+                              showFailureDialog(
+                                  'Sign in to add to wishlist', context);
+                            } else {
+                              if (!isFavorited) {
+                                // favotire it and add to wishlist
+                                setState(() {
+                                  isFavorited = !isFavorited;
+                                });
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .addToWishlist(CartItem(
+                                  id: product.id,
+                                  title: product.title,
+                                  description: product.description,
+                                  imagePath: product.imagePath,
+                                  price: product.price,
+                                  hasDiscount: product.hasDiscount,
+                                  discount: product.discount,
+                                  quantity: product.quantity,
+                                  category: product.category,
+                                ));
+                              } else {
+                                // unfavorite it and remove
+                                setState(() {
+                                  isFavorited = !isFavorited;
+                                });
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .removeFromWishlist(product.id);
+                              }
+                            }
+                            // probaly init is favorited by a method that searches the wishlist
+                          },
+                          icon: Icon(
+                            isFavorited
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red,
+                          )),
+                    )
                   ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Image.asset(
-                    product.imagePath,
-                    width: width * 1,
-                    height: height * 0.3,
-                    fit: BoxFit.fill,
-                  ),
                 ),
               ),
               Text(
@@ -176,31 +229,48 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
               SizedBox(height: 15),
               ElevatedButton(
                 style: ButtonStyle(
-                  // make it adaptive
+                  backgroundColor: product.quantity > 0
+                      ? const WidgetStatePropertyAll(Color(0xFF556B2F))
+                      : const WidgetStatePropertyAll(
+                          Color.fromARGB(255, 56, 58, 54)),
                   minimumSize:
                       WidgetStateProperty.all(Size(width * 0.7, height * 0.08)),
                   textStyle: WidgetStateProperty.all(
                     TextStyle(
-                      fontSize: width * 0.06, // Adjust the font size here
+                      fontSize: width * 0.06,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                onPressed: () {
-                  // add to cart logic
-                  Provider.of<ProductProvider>(context, listen: false).addToCart(CartItem(
-                      id: product.id,
-                      title: product.title,
-                      description: product.description,
-                      imagePath: product.imagePath,
-                      price: product.price,
-                      hasDiscount: product.hasDiscount,
-                      discount: product.discount,
-                      quantity: productQuantity,
-                      category: product.category));
-                  showSuccesDialog('Item Added Successfully', context, duration: 2);
-                },
-                child: const Text('Add to Cart'),
+                onPressed: product.quantity > 0
+                    ? () {
+                        // check if item already in cart
+                        if (Provider.of<ProductProvider>(context, listen: false)
+                            .cart
+                            .any((element) => element.id == product.id)) {
+                          showFailureDialog(
+                              'Item already in cart. Increase quantity instead',
+                              context);
+                        } else {
+                          // add to cart
+                          Provider.of<ProductProvider>(context, listen: false)
+                              .addToCart(CartItem(
+                                  id: product.id,
+                                  title: product.title,
+                                  description: product.description,
+                                  imagePath: product.imagePath,
+                                  price: product.price,
+                                  hasDiscount: product.hasDiscount,
+                                  discount: product.discount,
+                                  quantity: productQuantity,
+                                  category: product.category));
+                          showSuccesDialog('Item added successfully', context,
+                              duration: 2);
+                        }
+                      }
+                    : null,
+                child:
+                    Text(product.quantity > 0 ? 'Add to Cart' : 'Out of Stock'),
               )
             ],
           ),
