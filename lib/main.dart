@@ -1,9 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/model/model.dart' as model;
+import 'package:furnishly/views/checkout_page.dart';
+import 'package:furnishly/views/contact_us_page.dart';
 import 'package:furnishly/views/edit_profile.dart';
+import 'package:furnishly/views/faq_page.dart';
+import 'package:furnishly/views/my_orders.dart';
 import 'package:furnishly/views/view_single_product.dart';
 import 'package:furnishly/views/view_products.dart';
+import 'package:furnishly/views/wishlist.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:furnishly/views/account_page.dart';
 import 'package:furnishly/views/cart_page.dart';
@@ -94,6 +99,7 @@ class _MyAppState extends State<MyApp> {
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
             style: ButtonStyle(
+    
           foregroundColor:
               WidgetStatePropertyAll(Color.fromARGB(255, 255, 255, 255)),
           backgroundColor: WidgetStatePropertyAll(Color(0xFF556B2F)),
@@ -117,12 +123,17 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/home': (context) => const MyHomePage(),
         '/account': (context) => AccountPage(),
-        '/cart': (context) =>  CartPage(),
+        '/cart': (context) => CartPage(),
         '/categories': (context) => const CategoriesPage(),
         '/signup': (context) => const SignUpPage(),
         '/editProfile': (context) => EditAccountPage(),
         '/viewProducts': (context) => ViewProducts(),
         '/viewSingleProduct': (context) => ViewSingleProduct(),
+        '/wishlist': (context) => WishlistPage(),
+        '/checkout': (context) => CheckOutPage(),
+        '/myOrders': (context) => MyOrdersPage(),
+        '/faq' : (context) => FAQPage(),
+        '/contactUsPage': (context) => ContactUsPage(),
       },
     );
   }
@@ -172,18 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Text(
                     "Discover",
-                    style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.bodyMedium!.color,
-                      fontSize: Theme.of(context)
-                          .primaryTextTheme
-                          .bodyLarge!
-                          .fontSize,
-                      fontWeight: Theme.of(context)
-                          .primaryTextTheme
-                          .bodyMedium!
-                          .fontWeight,
-                    ),
+                    style : Theme.of(context).primaryTextTheme.bodyLarge
                   ),
                   SizedBox(height: 20),
                   // the search bar
@@ -366,28 +366,12 @@ class ShowProducts extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(16.0), // Rounded corners
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                  Colors.black.withOpacity(0.2), // Light shadow
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3), // Shadow direction
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Image.asset(
-                            product.imagePath,
-                            width: width * 0.22,
-                            height: height * 0.13,
-                            fit: BoxFit.fill,
-                          ),
+                      MyImageContainer(
+                        child: Image.asset(
+                          product.imagePath,
+                          width: width * 0.22,
+                          height: height * 0.13,
+                          fit: BoxFit.fill,
                         ),
                       ),
                       SizedBox(height: 8),

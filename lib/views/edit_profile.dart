@@ -37,10 +37,10 @@ class EditAccountPage extends StatelessWidget {
                 // the username
                 EditInfoWidget(
                     originalFormKey: formKey2,
-                    textTitle: "Username",
+                    textTitle: "Name",
                     textInField: currentUser.username,
-                    dialogTitle: "Enter New Username",
-                    dialogHintText: 'Enter New Username',
+                    dialogTitle: "Enter New Name",
+                    dialogHintText: 'Enter New Name',
                     confirmButtonFunction: () {
                       if (formKey2!.currentState!.validate()) {
                         if (usernameDialogController.text.isNotEmpty) {

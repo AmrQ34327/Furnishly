@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({super.key});
@@ -105,36 +106,40 @@ class MyDrawer extends StatelessWidget {
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           child: ListView(
             children: [
-              // will be sign in / or account name depending on state
               DrawerHeader(
                 child: TextButton(
                     onPressed: () {},
                     child: Text(
-                      "Sign in",
-                      style: TextStyle(
+                      "Furnishly",
+                      style: GoogleFonts.cinzel(
                           color: Theme.of(context)
                               .appBarTheme
                               .titleTextStyle!
                               .color,
-                          fontSize: width * 0.07,
+                          fontSize: width * 0.06,
                           fontWeight: FontWeight.bold),
                     )),
               ),
               ListTile(
-                leading: Icon(
-                  Icons.favorite,
-                  color: Theme.of(context).appBarTheme.titleTextStyle!.color,
-                ),
-                title: Text(
-                  "Wishlist",
-                  style: TextStyle(
+                  leading: Icon(
+                    Icons.favorite,
                     color: Theme.of(context).appBarTheme.titleTextStyle!.color,
                   ),
-                ),
-                onTap: () {
-                  // here will take the user to wishlist page
-                },
-              ),
+                  title: Text(
+                    "Wishlist",
+                    style: TextStyle(
+                      color:
+                          Theme.of(context).appBarTheme.titleTextStyle!.color,
+                    ),
+                  ),
+                  onTap: () {
+                    if (FirebaseAuth.instance.currentUser != null) {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/wishlist');
+                    } else {
+                      Navigator.pushNamed(context, '/account');
+                    }
+                  }),
               ListTile(
                 leading: Icon(Icons.assignment,
                     color: Theme.of(context).appBarTheme.titleTextStyle!.color),
@@ -146,6 +151,13 @@ class MyDrawer extends StatelessWidget {
                 ),
                 onTap: () {
                   // here will take the user to my orders page
+                  if (FirebaseAuth.instance.currentUser != null) {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/myOrders');
+                  } else {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/account');
+                  }
                 },
               ),
               ListTile(
@@ -158,7 +170,8 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // here will take the user to support page
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/contactUsPage');
                 },
               ),
               ListTile(
@@ -171,7 +184,8 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // here will take the user to FAQ page
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/faq');
                 },
               ),
               // a sign out that appears if signed in
@@ -223,12 +237,7 @@ class EditInfoWidget extends StatelessWidget {
           alignment: Alignment.topLeft,
           child: Text(
             textTitle,
-            style: TextStyle(
-                color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-                fontWeight:
-                    Theme.of(context).primaryTextTheme.bodyMedium!.fontWeight,
-                fontSize:
-                    Theme.of(context).primaryTextTheme.bodyMedium!.fontSize),
+            style: Theme.of(context).primaryTextTheme.bodyMedium,
           ),
         ),
         SizedBox(height: 13),
@@ -268,19 +277,9 @@ class EditInfoWidget extends StatelessWidget {
                                     children: [
                                       Text(
                                         dialogTitle,
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .primaryTextTheme
-                                                .bodyMedium!
-                                                .color,
-                                            fontWeight: Theme.of(context)
-                                                .primaryTextTheme
-                                                .bodyMedium!
-                                                .fontWeight,
-                                            fontSize: Theme.of(context)
-                                                .primaryTextTheme
-                                                .bodyMedium!
-                                                .fontSize),
+                                        style: Theme.of(context)
+                                            .primaryTextTheme
+                                            .bodyMedium,
                                       ),
                                       SizedBox(height: height * 0.006),
                                       Form(
@@ -341,19 +340,9 @@ class EditInfoWidget extends StatelessWidget {
                                       children: [
                                         Text(
                                           dialogTitle,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .bodyMedium!
-                                                  .color,
-                                              fontWeight: Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .bodyMedium!
-                                                  .fontWeight,
-                                              fontSize: Theme.of(context)
-                                                  .primaryTextTheme
-                                                  .bodyMedium!
-                                                  .fontSize),
+                                          style: Theme.of(context)
+                                              .primaryTextTheme
+                                              .bodyMedium,
                                         ),
                                         SizedBox(height: height * 0.006),
                                         StatefulBuilder(builder:
@@ -456,12 +445,7 @@ void showSuccesDialog(String message, BuildContext context,
           animType: AnimType.rightSlide,
           title: 'Success',
           desc: message,
-          titleTextStyle: TextStyle(
-            color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-            fontWeight:
-                Theme.of(context).primaryTextTheme.bodyMedium!.fontWeight,
-            fontSize: Theme.of(context).primaryTextTheme.bodyMedium!.fontSize,
-          ),
+          titleTextStyle: Theme.of(context).primaryTextTheme.bodyMedium,
           descTextStyle: TextStyle(
             color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
             fontWeight:
@@ -480,12 +464,7 @@ void showFailureDialog(String message, BuildContext context) {
           animType: AnimType.rightSlide,
           title: 'Error',
           desc: message,
-          titleTextStyle: TextStyle(
-            color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
-            fontWeight:
-                Theme.of(context).primaryTextTheme.bodyMedium!.fontWeight,
-            fontSize: Theme.of(context).primaryTextTheme.bodyMedium!.fontSize,
-          ),
+          titleTextStyle: Theme.of(context).primaryTextTheme.bodyMedium,
           descTextStyle: TextStyle(
             color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
             fontWeight:
@@ -494,4 +473,68 @@ void showFailureDialog(String message, BuildContext context) {
           ),
           autoHide: const Duration(seconds: 3))
       .show();
+}
+
+class MyImageContainer extends StatelessWidget {
+  final Widget child;
+  const MyImageContainer({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0), // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Light shadow
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // Shadow direction
+          ),
+        ],
+      ),
+      child: ClipRRect(borderRadius: BorderRadius.circular(16.0), child: child),
+    );
+  }
+}
+
+class CheckOutInfoWidget extends StatelessWidget {
+  final String title;
+  final String hintText;
+  final TextEditingController fieldController;
+  final String? Function(String?)? validator;
+  final bool isPhoneField;
+  final bool isAddressField;
+
+  const CheckOutInfoWidget(
+      {super.key,
+      required this.title,
+      required this.hintText,
+      required this.fieldController,
+      this.isPhoneField = false,
+      this.isAddressField = false,
+      this.validator});
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).primaryTextTheme.bodyMedium),
+          SizedBox(height: 8),
+          TextFormField(
+              keyboardType: isPhoneField
+                  ? TextInputType.phone
+                  : isAddressField
+                      ? TextInputType.streetAddress
+                      : TextInputType.text,
+              validator: validator,
+              controller: fieldController,
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  hintText: hintText)),
+          SizedBox(height: 6)
+        ]);
+  }
 }
