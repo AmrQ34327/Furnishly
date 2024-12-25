@@ -13,7 +13,7 @@ class CategoriesPage extends StatelessWidget {
       appBar: MyAppBar(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding:  EdgeInsets.all(width * 0.02),
           child: Column(
             children: <Widget>[
               SizedBox(height: height * 0.012),
@@ -53,7 +53,7 @@ class CategoriesPage extends StatelessWidget {
                                   width: 2, // Border width
                                 ),
                                 borderRadius: BorderRadius.circular(
-                                    16.0), // Rounded corners
+                                    width * 0.04), // Rounded corners
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black
@@ -65,7 +65,7 @@ class CategoriesPage extends StatelessWidget {
                                 ],
                               ),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
+                                borderRadius: BorderRadius.circular(width * 0.04),
                                 child: Image.asset(
                                   category.imagePath,
                                   width: width * 0.4, // make it adaptive
@@ -74,7 +74,7 @@ class CategoriesPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: height * 0.01),
                             Text(
                               category.title,
                               style: TextStyle(

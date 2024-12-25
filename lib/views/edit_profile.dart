@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
+import 'package:furnishly/views/my_orders.dart';
 import 'package:furnishly/views/shared.dart';
 import 'package:provider/provider.dart';
 import '../model/model.dart';
@@ -21,6 +22,7 @@ class EditAccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Account? currentUser = Provider.of<UserProvider>(context).currentUser;
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final TextEditingController passwordController =
         TextEditingController(text: currentUser!.password);
     return Scaffold(
@@ -29,7 +31,7 @@ class EditAccountPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(14.0),
+          padding: EdgeInsets.all(width * 0.04),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -45,7 +47,7 @@ class EditAccountPage extends StatelessWidget {
                       if (formKey2!.currentState!.validate()) {
                         if (usernameDialogController.text.isNotEmpty) {
                           Provider.of<UserProvider>(context, listen: false)
-                              .updateUsername(usernameDialogController.text);
+                              .updateUsername(titleCase(usernameDialogController.text));
                           usernameDialogController.clear();
                           Navigator.pop(context);
                           //show success dialog ???
@@ -60,7 +62,7 @@ class EditAccountPage extends StatelessWidget {
                     textTitle: "Email",
                     showEmailVerificationStatus: true,
                     // change below to !
-                    textInField: currentUser?.email ?? "Whatever",
+                    textInField: currentUser.email ,
                     dialogTitle: "Enter New Email",
                     dialogHintText: "Enter New Email",
                     confirmButtonFunction: () async {

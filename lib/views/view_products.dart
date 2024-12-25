@@ -85,10 +85,10 @@ class _ViewProductsState extends State<ViewProducts> {
       drawer: const MyDrawer(),
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(width * 0.03),
         child: Column(
           children: [
-            const SizedBox(height: 20), // make it adaptive
+             SizedBox(height: height * 0.03), 
             TextField(
               controller: searchBarController,
               onChanged: (value) {
@@ -102,22 +102,22 @@ class _ViewProductsState extends State<ViewProducts> {
                 hintText: 'Search...',
                 hintStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(38.0),
+                  borderRadius: BorderRadius.circular(width * 0.07),
                   borderSide: const BorderSide(color: Colors.grey),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: height * 0.03),
             searchBarController.text.isNotEmpty
                 ? SizedBox(
                     height: filteredProductsList.isEmpty
                         ? height * 0.2
                         : height * 0.4,
                     child: filteredProductsList.isEmpty
-                        ? const Center(
+                        ?  Center(
                             child: Text(
                               'No products found',
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: width * 0.045),
                             ),
                           )
                         : ListView.builder(
@@ -174,9 +174,9 @@ class _ViewProductsState extends State<ViewProducts> {
                     updateFilter("Outdoors", selected);
                   }),
             ]): SizedBox(),
-            SizedBox(height: 8),
+            SizedBox(height: height * 0.01),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 23.0),
+              padding: EdgeInsets.symmetric(horizontal: width * 0.06),
               child: query.isEmpty? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -224,7 +224,7 @@ class _ViewProductsState extends State<ViewProducts> {
                 ],
               ): const SizedBox(),
             ),
-            const SizedBox(height: 20.0),
+             SizedBox(height: height * 0.03),
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -253,7 +253,7 @@ class _ViewProductsState extends State<ViewProducts> {
                               fit: BoxFit.fill,
                             ),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: height * 0.03),
                           Text(
                             product.title,
                             style: TextStyle(
@@ -271,7 +271,7 @@ class _ViewProductsState extends State<ViewProducts> {
                                   .color,
                             ),
                           ),
-                          SizedBox(height: 5),
+                          SizedBox(height: height * 0.012),
                           Align(
                             alignment: Alignment.bottomRight,
                             child: Text(

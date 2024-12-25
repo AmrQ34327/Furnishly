@@ -8,11 +8,13 @@ class FAQPage extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: MyAppBar(showSignInOut: false),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(19.0),
+          padding:  EdgeInsets.all(width * 0.04),
           child: Column(
             children: [
               Expanded(
@@ -22,7 +24,7 @@ class FAQPage extends StatelessWidget {
                     final question = faq[index]["question"]!;
                     final answer = faq[index]["answer"]!;
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.symmetric(vertical: height * 0.01),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
