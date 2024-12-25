@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:furnishly/model/fakedata.dart';
 import 'package:furnishly/model/model.dart';
 import 'dart:core';
 
@@ -93,6 +94,27 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  
+
+  List<String> outOfStockProducts() {
+    List<String> resultList = [];
+    // iterate through every cart item
+    for (var cartItem in cart) {
+      var cartItemID = cartItem.id;
+      var theItemInProductList =
+          productList.firstWhere((product) => product.id == cartItemID);
+      // check if it's quantity is more than the quantity of it in products list
+      if (theItemInProductList.quantity < cartItem.quantity) {
+        resultList = [
+          theItemInProductList.title,
+          theItemInProductList.quantity.toString()
+        ];
+        break;
+      }
+    }
+    return resultList;
+  }
+
   void updateQuantity(CartItem item, int newQuantity) {
     item.quantity = newQuantity;
     notifyListeners();
@@ -118,7 +140,7 @@ class ProductProvider extends ChangeNotifier {
     double totalDiscount = 0;
     for (var item in cart) {
       if (item.hasDiscount) {
-        totalDiscount += item.discount;
+        totalDiscount = totalDiscount + item.discount * item.quantity;
       }
     }
     return totalDiscount;
@@ -145,17 +167,16 @@ class ProductProvider extends ChangeNotifier {
   }
 }
 
- bool isItemInWishList(BuildContext context, String ID) {
-    var productFound = false;
-    // search wishlist
-    for (var item
-        in Provider.of<UserProvider>(context, listen: false).wishlist) {
-      if (item.id == ID) {
-        productFound = true;
-        break;
-      } else {
-        productFound = false;
-      }
+bool isItemInWishList(BuildContext context, String ID) {
+  var productFound = false;
+  // search wishlist
+  for (var item in Provider.of<UserProvider>(context, listen: false).wishlist) {
+    if (item.id == ID) {
+      productFound = true;
+      break;
+    } else {
+      productFound = false;
     }
-    return productFound;
   }
+  return productFound;
+}

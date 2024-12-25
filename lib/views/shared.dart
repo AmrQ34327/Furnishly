@@ -240,10 +240,9 @@ class EditInfoWidget extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.bodyMedium,
           ),
         ),
-        SizedBox(height: 13),
+        SizedBox(height: height * 0.016),
         ListTile(
             leading: SizedBox(
-              // return here amr
               width: width * 0.6,
               child: TextField(
                 obscureText: isPasswordDialog,
@@ -481,9 +480,10 @@ class MyImageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0), // Rounded corners
+        borderRadius: BorderRadius.circular(width * 0.03), // Rounded corners
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2), // Light shadow
@@ -493,7 +493,7 @@ class MyImageContainer extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(borderRadius: BorderRadius.circular(16.0), child: child),
+      child: ClipRRect(borderRadius: BorderRadius.circular(width * 0.03), child: child),
     );
   }
 }
@@ -516,12 +516,13 @@ class CheckOutInfoWidget extends StatelessWidget {
       this.validator});
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: Theme.of(context).primaryTextTheme.bodyMedium),
-          SizedBox(height: 8),
+          SizedBox(height: height * 0.01),
           TextFormField(
               keyboardType: isPhoneField
                   ? TextInputType.phone
@@ -534,7 +535,7 @@ class CheckOutInfoWidget extends StatelessWidget {
                   border: const OutlineInputBorder(),
                   hintStyle: const TextStyle(color: Colors.grey),
                   hintText: hintText)),
-          SizedBox(height: 6)
+          SizedBox(height: height * 0.01)
         ]);
   }
 }

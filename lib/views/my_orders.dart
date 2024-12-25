@@ -11,6 +11,8 @@ class MyOrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
      
     final orderList = Provider.of<UserProvider>(context).orderList;
     // Sort the orderList by orderMadeDate (newest to oldest)
@@ -19,27 +21,27 @@ class MyOrdersPage extends StatelessWidget {
       appBar: MyAppBar(showSignInOut: false),
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding:  EdgeInsets.all(height * 0.025),
         child: Column(
           children: [
             // here
-            SizedBox(height: 13),
+            SizedBox(height: height * 0.017),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 15.0),
+              padding: EdgeInsets.symmetric(vertical: height * 0.022),
               decoration: BoxDecoration(
                 color: Theme.of(context).appBarTheme.backgroundColor,
                 borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20)),
+                    bottomLeft: Radius.circular(width * 0.05),
+                    bottomRight: Radius.circular(width * 0.05)),
               ),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.03),
                   child: Text(
                     'My Orders',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: width * 0.075,
                       fontWeight: Theme.of(context)
                           .primaryTextTheme
                           .bodyLarge!
@@ -51,7 +53,7 @@ class MyOrdersPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: height * 0.012),
             Expanded(
               child: ListView.builder(
                   itemCount: context.watch<UserProvider>().orderList.length,
@@ -60,7 +62,7 @@ class MyOrdersPage extends StatelessWidget {
                     final order = 
                     Provider.of<UserProvider>(context).orderList[index];
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.all(width * 0.01),
                       child: OrderCard(
                         name: order.name,
                         address: order.address,
@@ -104,10 +106,11 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // sort ordered items here
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding:  EdgeInsets.all(width * 0.015),
         child: Column(
           children: [
             // name row
@@ -191,7 +194,7 @@ class OrderCard extends StatelessWidget {
                     children: [
                       // order info widget
                       OrderInfo(title: 'Order Number', subtitle: orderNumber),
-                      OrderInfo(title: 'Recipient Name', subtitle: name),
+                      OrderInfo(title: 'Recipient Name', subtitle: titleCase(name)),
                       OrderInfo(title: 'Phone Number', subtitle: phoneNumber),
                       OrderInfo(title: 'Delivery Address', subtitle: address),
                       OrderInfo(title: 'Delivery Date', subtitle: date),
@@ -212,7 +215,6 @@ class OrderCard extends StatelessWidget {
                                 .bodyMedium!
                                 .fontWeight,
                           )),
-                      // amr problem here
                       ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: orderedItems.length,

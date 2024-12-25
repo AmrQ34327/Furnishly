@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +57,7 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
       appBar: MyAppBar(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding:  EdgeInsets.all(width * 0.04),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -195,20 +194,20 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                     icon: const Icon(Icons.remove),
                   ),
                   SizedBox(
-                    width: 60,
-                    height: 40,
+                    width: productQuantity < 10 ? width * 0.12 : width * 0.15,
+                    height: height * 0.068,
                     child: TextField(
                       enabled: false,
                       style: const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                       controller: quantityController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
+                      decoration:  InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20), // make it adaptive
-                        fillColor: Color.fromARGB(255, 6, 68, 119),
+                            horizontal: width * 0.045), 
+                        fillColor: const Color.fromARGB(255, 6, 68, 119),
                         filled: true,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ),
@@ -226,7 +225,7 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: height * 0.02),
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: product.quantity > 0

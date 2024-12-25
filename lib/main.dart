@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
             titleTextStyle: GoogleFonts.cinzel(
               color: const Color(0xFFDAA520),
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: width * 0.06,
             )),
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 30, 255, 0)),
@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
               WidgetStatePropertyAll(Color.fromARGB(255, 255, 255, 255)),
           backgroundColor: WidgetStatePropertyAll(Color(0xFF556B2F)),
         )),
-        chipTheme: const ChipThemeData(
+        chipTheme: ChipThemeData(
           shape: StadiumBorder(),
           backgroundColor: Color(0xFF2C3E50),
           selectedColor: Color(0xFFB58D4B),
@@ -113,7 +113,7 @@ class _MyAppState extends State<MyApp> {
           labelStyle: TextStyle(
             color: Colors.white, // Text color inside chip
             fontWeight: FontWeight.bold,
-            fontSize: 12,
+            fontSize: width * 0.03,
           ),
           elevation: 4,
         ),
@@ -176,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: MyAppBar(),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:  EdgeInsets.all(width * 0.042),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     "Discover",
                     style : Theme.of(context).primaryTextTheme.bodyLarge
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: height * 0.03),
                   // the search bar
                   TextField(
                     controller: searchBarController,
@@ -200,12 +200,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       hintText: 'Search...',
                       hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(38.0),
+                        borderRadius: BorderRadius.circular(width * 0.07),
                         borderSide: const BorderSide(color: Colors.grey),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                   SizedBox(height: height * 0.03),
                   // products list
                   searchBarController.text.isNotEmpty
                       ? SizedBox(
@@ -213,10 +213,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               ? height * 0.2
                               : height * 0.4,
                           child: filteredProductsList.isEmpty
-                              ? const Center(
+                              ?  Center(
                                   child: Text(
                                     'No products found',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(fontSize: width * 0.045),
                                   ),
                                 )
                               : ListView.builder(
@@ -356,7 +356,7 @@ class ShowProducts extends StatelessWidget {
             if (index < shownFilteredProductsList.length) {
               final product = shownFilteredProductsList[index];
               return Container(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(width * 0.02),
                 child: GestureDetector(
                   onTap: () {
                     // open prodcut
@@ -374,7 +374,7 @@ class ShowProducts extends StatelessWidget {
                           fit: BoxFit.fill,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: height * 0.02),
                       Text(
                         product.title,
                         overflow: TextOverflow.ellipsis,
@@ -394,7 +394,7 @@ class ShowProducts extends StatelessWidget {
                               .color,
                         ),
                       ),
-                      SizedBox(height: 20) // change to adapt
+                      SizedBox(height: height * 0.035) 
                     ],
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
+import 'package:furnishly/views/my_orders.dart';
 import 'package:furnishly/views/shared.dart';
 import 'package:provider/provider.dart';
 
@@ -191,7 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   
                                 );
                                 var currentProfile = Account(
-                                  username: usernameController.text,
+                                  username: titleCase(usernameController.text),
                                   email: emailController.text,
                                   wishlist: [],
                                   orderList: [],

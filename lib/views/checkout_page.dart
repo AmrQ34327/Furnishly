@@ -62,7 +62,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: EdgeInsets.all(width * 0.045),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       }
                       return null;
                     },
-                    title: 'Name',
+                    title: 'Recipient Name',
                     hintText: 'Enter Your Name',
                     fieldController: nameController),
                 CheckOutInfoWidget(
@@ -108,7 +108,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     fieldController: phoneController),
                 // deleviry time part
                 Text('Delivery Date',
-                   style : Theme.of(context).primaryTextTheme.bodyMedium),
+                    style: Theme.of(context).primaryTextTheme.bodyMedium),
                 RadioListTile(
                     contentPadding: EdgeInsets.symmetric(vertical: 4.0),
                     title: Text('Soon as possible',
@@ -157,6 +157,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               pickedDate.month, pickedDate.day);
                           userChosenDate =
                               dateOnly.toLocal().toString().split(' ')[0];
+                          dateController.text = userChosenDate!;
                         }
                       }
                     }),
@@ -175,7 +176,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   height: 8,
                 ),
                 Text('Payment Method',
-                    style : Theme.of(context).primaryTextTheme.bodyMedium),
+                    style: Theme.of(context).primaryTextTheme.bodyMedium),
                 RadioListTile(
                     contentPadding: EdgeInsets.symmetric(vertical: 4.0),
                     title: Text('Cash on Delivery',
@@ -215,6 +216,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                       Theme.of(context).scaffoldBackgroundColor,
                                   dialogType: DialogType.info,
                                   animType: AnimType.rightSlide,
+                                  descTextStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodySmall!
+                                          .color),
                                   title: '',
                                   desc:
                                       'Real card payment integration is not implemented due to the need for business verification, Your order will be accepted once you click Confirm Order',
@@ -224,7 +230,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       );
                     }),
                 Text('Promo Code',
-                    style : Theme.of(context).primaryTextTheme.bodyMedium),
+                    style: Theme.of(context).primaryTextTheme.bodyMedium),
                 Text(
                   'Click the checkmark to apply the promo code',
                   style: TextStyle(
@@ -453,7 +459,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     )
                   ],
                 ),
-                SizedBox(height: 14),
+                SizedBox(height: height * 0.02),
                 Align(
                   child: ElevatedButton(
                       onPressed: () {
@@ -465,7 +471,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             var uuid = Uuid();
                             Provider.of<UserProvider>(context, listen: false)
                                 .makeOrder(Order(
-                                  orderMadeDate: DateTime.now(),
+                              orderMadeDate: DateTime.now(),
                               orderNumber: uuid.v4(),
                               deliveryDate:
                                   selectedDeliveryDate == 'Soon as possible'
@@ -481,7 +487,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               orderedItems: Provider.of<ProductProvider>(
                                       context,
                                       listen: false)
-                                  .cart.toList(),
+                                  .cart
+                                  .toList(),
                               paymentMethod: paymentMethod,
                               totalPrice: Provider.of<ProductProvider>(context,
                                           listen: false)
@@ -509,7 +516,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           // do the credit card here
                         }
                       },
-                      child: Text('Confirm Order')),
+                      child: const Text('Confirm Order')),
                 )
               ],
             ),

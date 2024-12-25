@@ -61,7 +61,7 @@ var productList = [
     price: 199.99,
     hasDiscount: true,
     discount: 20.0,
-    quantity: 8,
+    quantity: 10,
     category: Category(
         title: "Bedroom", imagePath: "assets/images/categories/bedroom.jpg"),
   ),
@@ -372,7 +372,7 @@ List<Map<String, String>> faq = [
   {
     "question": "6. Do you offer assembly services?",
     "answer":
-        "Yes, we offer assembly services for select items. You can add this option during checkout if it's available."
+        "Yes, we offer assembly services for select items."
   },
   {
     "question": "7. How can I contact customer support?",

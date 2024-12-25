@@ -13,13 +13,16 @@ class ContactUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+     
     return Scaffold(
       appBar: MyAppBar(
         showSignInOut: false,
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(width * 0.04),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +31,7 @@ class ContactUsPage extends StatelessWidget {
                   "Get in Touch",
                   style : Theme.of(context).primaryTextTheme.bodyLarge,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.022),
                 // Phone Card
                 Card(
                   child: ListTile(
@@ -44,7 +47,7 @@ class ContactUsPage extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: height * 0.01),
                 // Email Card
                 Card(
                   child: ListTile(
@@ -60,7 +63,7 @@ class ContactUsPage extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: height * 0.01),
                 // Address Card
                 Card(
                   child: ListTile(
@@ -72,32 +75,32 @@ class ContactUsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.02),
                 // Inquiry Form
                 Text(
                   "Quick Inquiry",
                   style : Theme.of(context).primaryTextTheme.bodyLarge,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.021),
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(
                       labelText: 'Name', border: OutlineInputBorder()),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: height * 0.01),
                 TextField(
                   controller: emailController,
                   decoration: InputDecoration(
                       labelText: 'Email', border: OutlineInputBorder()),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: height * 0.01),
                 TextField(
                   controller: messageController,
                   maxLines: 4,
                   decoration: InputDecoration(
                       labelText: 'Message', border: OutlineInputBorder()),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.021),
                 ElevatedButton(
                   onPressed: () {
                     // Handle form submission
@@ -126,7 +129,7 @@ class ContactUsPage extends StatelessWidget {
                   },
                   child: Text('Send Inquiry'),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.023),
                 // Social Media Links
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -146,8 +149,8 @@ class ContactUsPage extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(
-                        FontAwesomeIcons.x,size: 20,
+                      icon:  Icon(
+                        FontAwesomeIcons.x,size: width * 0.05,
                       ),
                       onPressed: () {
                         openX();
@@ -155,7 +158,7 @@ class ContactUsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: height * 0.03),
                 Center(
                   child: Text(
                     "Our team will get back to you within 24-48 hours. Thank you for reaching out!",

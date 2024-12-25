@@ -137,7 +137,7 @@ class _AccountPageState extends State<AccountPage> {
                                                     height: height * 0.006),
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
+                                                      EdgeInsets.all(width * 0.02),
                                                   child: TextField(
                                                     controller:
                                                         forgotPasswordController,
@@ -191,7 +191,8 @@ class _AccountPageState extends State<AccountPage> {
                                                       }
                                                     },
                                                     child:
-                                                        const Text("Confirm"))
+                                                        const Text("Confirm")),
+                                                        SizedBox(height: height * 0.01,),
                                               ],
                                             )).show();
                                       },
