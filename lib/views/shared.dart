@@ -1,7 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:furnishly/controller/controller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   const MyBottomNavigationBar({super.key});
@@ -77,7 +80,13 @@ class _MyAppBarState extends State<MyAppBar> {
                   FirebaseAuth.instance.currentUser == null
                       ? Navigator.pushNamed(context, '/account')
                       : await FirebaseAuth.instance.signOut();
-                  setState(() {});
+                  Provider.of<ProductProvider>(context, listen: false)
+                      .clearCart();
+                  Provider.of<UserProvider>(context, listen: false)
+                      .setUser(null);
+                  if (mounted) {
+                    setState(() {});
+                  }
                 },
                 child: Text(
                   FirebaseAuth.instance.currentUser == null
@@ -188,8 +197,6 @@ class MyDrawer extends StatelessWidget {
                   Navigator.pushNamed(context, '/faq');
                 },
               ),
-              // a sign out that appears if signed in
-              const ListTile(),
             ],
           ),
         ));
@@ -493,7 +500,8 @@ class MyImageContainer extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(borderRadius: BorderRadius.circular(width * 0.03), child: child),
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(width * 0.03), child: child),
     );
   }
 }

@@ -14,6 +14,19 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      setState(() {
+        _currentUser = user;
+      });
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -55,6 +68,9 @@ class _CartPageState extends State<CartPage> {
                     ),
                   ),
                 ),
+                // firebase user
+                _currentUser ==
+                              null ?
                 context.read<ProductProvider>().isCartEmpty
                     ? Padding(
                         padding: EdgeInsets.only(top: height * 0.3),
@@ -81,8 +97,39 @@ class _CartPageState extends State<CartPage> {
                                 ),
                               );
                             }),
-                      ),
-                // new widgets here
+                      ) : 
+                      context.read<UserProvider>().currentUser!.userCart.isEmpty ?
+                      Padding(
+                        padding: EdgeInsets.only(top: height * 0.3),
+                        child: Center(
+                            child: Text(
+                          'Your cart is empty',
+                          style: Theme.of(context).primaryTextTheme.bodyMedium,
+                        )),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                            itemCount:
+                                context.watch<UserProvider>().currentUser!.userCart.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final product =
+                                  Provider.of<UserProvider>(context)
+                                      .currentUser!.userCart[index];
+                              return Padding(
+                                padding: EdgeInsets.all(width * 0.01),
+                                child: CartTile2(
+                                  cartItem: product,
+                                  productQuantity: product.quantity,
+                                ),
+                              );
+                            }),
+                      )
+                      ,
+                      // firebase user
+                _currentUser ==
+                              null ?
+                // global cart
                 Provider.of<ProductProvider>(context).isCartEmpty
                     ? SizedBox()
                     : Padding(
@@ -110,7 +157,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                 ),
                                 Text(
-                                  '- ${Provider.of<ProductProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
+                                  '- \$ ${Provider.of<ProductProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
                                   style: TextStyle(
                                     color: Theme.of(context)
                                         .primaryTextTheme
@@ -172,34 +219,170 @@ class _CartPageState extends State<CartPage> {
                                   var outOfStockProducts =
                                       Provider.of<ProductProvider>(context,
                                               listen: false)
-                                          .outOfStockProducts().toList();
-                                  if (outOfStockProducts.isEmpty){
-                                     if (FirebaseAuth.instance.currentUser !=
-                                      null) {
-                                    Navigator.pushNamed(context, '/checkout');
+                                          .outOfStockProducts()
+                                          .toList();
+                                  if (outOfStockProducts.isEmpty) {
+                                    if (FirebaseAuth.instance.currentUser !=
+                                        null) {
+                                      Navigator.pushNamed(context, '/checkout');
+                                    } else {
+                                      showFailureDialog(
+                                          'Not Signed in', context);
+                                    }
                                   } else {
-                                    showFailureDialog('Not Signed in', context);
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.noHeader,
+                                      dialogBackgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      animType: AnimType.rightSlide,
+                                      title: 'Stock Limit Exceeded',
+                                      titleTextStyle: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodyMedium,
+                                      descTextStyle: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodySmall,
+                                      desc: int.parse(outOfStockProducts[1]) > 1
+                                          ? 'We are sorry! We currently only have ${outOfStockProducts[1]}x ${outOfStockProducts[0]} in stock. Please reduce the quantity in your cart to proceed. Thank you'
+                                          : 'We are sorry!  ${outOfStockProducts[0]} is currently out of stock.',
+                                      btnOkOnPress: () {},
+                                      autoHide: const Duration(seconds: 5),
+                                    ).show();
                                   }
-                                  } else {
-                                          AwesomeDialog(
-                                              context: context,
-                                              dialogType: DialogType.noHeader,
-                                              dialogBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                              animType: AnimType.rightSlide,
-                                              title: 'Stock Limit Exceeded',
-                                              titleTextStyle: Theme.of(context).primaryTextTheme.bodyMedium,
-                                              descTextStyle: Theme.of(context).primaryTextTheme.bodySmall,
-                                              desc: int.parse(outOfStockProducts[1]) > 1 ?  'We are sorry! We currently only have ${outOfStockProducts[1]}x ${outOfStockProducts[0]} in stock. Please reduce the quantity in your cart to proceed. Thank you' :  'We are sorry!  ${outOfStockProducts[0]} is currently out of stock.',
-                                              btnOkOnPress: () {},
-                                              autoHide: const Duration(seconds: 5),
-                                              ).show();
-                                  }
-                                 
                                 },
                                 child: const Text("Proceed to checkout"))
                           ],
                         ),
-                      ),
+                      ) : 
+                      // Local Cart
+                      Provider.of<UserProvider>(context, listen: false).currentUser!.userCart.isEmpty?
+                      SizedBox()
+                    : Padding(
+                        padding: EdgeInsets.symmetric(horizontal: width * 0.01),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Discount: ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                ),
+                                Text(
+                                  '- \$ ${Provider.of<UserProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total: ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                ),
+                                Text(
+                                  '\$ ${Provider.of<UserProvider>(context, listen: false).totalPrice.toStringAsFixed(2)} ',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodySmall!
+                                        .color,
+                                    fontSize: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    fontWeight: Theme.of(context)
+                                        .primaryTextTheme
+                                        .bodyMedium!
+                                        .fontWeight,
+                                  ),
+                                )
+                              ],
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  var outOfStockProducts =
+                                      Provider.of<ProductProvider>(context,
+                                              listen: false)
+                                          .outOfStockProducts()
+                                          .toList();
+                                  if (outOfStockProducts.isEmpty) {
+                                    if (FirebaseAuth.instance.currentUser !=
+                                        null) {
+                                      Navigator.pushNamed(context, '/checkout');
+                                    } else {
+                                      showFailureDialog(
+                                          'Not Signed in', context);
+                                    }
+                                  } else {
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.noHeader,
+                                      dialogBackgroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      animType: AnimType.rightSlide,
+                                      title: 'Stock Limit Exceeded',
+                                      titleTextStyle: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodyMedium,
+                                      descTextStyle: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodySmall,
+                                      desc: int.parse(outOfStockProducts[1]) > 1
+                                          ? 'We are sorry! We currently only have ${outOfStockProducts[1]}x ${outOfStockProducts[0]} in stock. Please reduce the quantity in your cart to proceed. Thank you'
+                                          : 'We are sorry!  ${outOfStockProducts[0]} is currently out of stock.',
+                                      btnOkOnPress: () {},
+                                      autoHide: const Duration(seconds: 5),
+                                    ).show();
+                                  }
+                                },
+                                child: const Text("Proceed to checkout"))
+                          ],
+                        ),
+                      )
+                      
+                      ,
               ],
             ),
           ),
@@ -334,7 +517,7 @@ class _CartTileState2 extends State<CartTile2> {
             ),
           ),
           SizedBox(width: width * 0.03),
-          // column for title subtutle
+          // column for title subtitle
           Expanded(
             child: SizedBox(
               width: width * 0.5,
@@ -378,10 +561,20 @@ class _CartTileState2 extends State<CartTile2> {
                     color: Theme.of(context).primaryTextTheme.bodySmall!.color,
                     onPressed: () {
                       if (widget.showIncreaseDecreaseQuantity) {
-                        // delete entry from cart
-                        Provider.of<ProductProvider>(context, listen: false)
-                            .removeFromCart(widget.cartItem.id);
-                        setState(() {});
+                        // delete entry from global cart
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          Provider.of<ProductProvider>(context, listen: false)
+                              .removeFromCart(widget.cartItem.id);
+                          setState(() {});
+                        } else if (FirebaseAuth.instance.currentUser != null) {
+                          // delete entry from local cart and update it in hive
+                          Provider.of<UserProvider>(context, listen: false)
+                              .removeFromCart(widget.cartItem.id);
+                              Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(
+                                    FirebaseAuth.instance.currentUser!.uid);
+                          setState(() {});
+                        }
                       } else {
                         // remove entry from wishlist
                         Provider.of<UserProvider>(context, listen: false)

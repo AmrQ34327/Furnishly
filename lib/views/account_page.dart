@@ -17,6 +17,9 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   User? _currentUser;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  TextEditingController forgotPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -34,9 +37,6 @@ class _AccountPageState extends State<AccountPage> {
     bool obscureText = true; // return it up if it doesnt work
     final width = MediaQuery.of(context).size.width;
     Account? currentUser = Provider.of<UserProvider>(context).currentUser;
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    TextEditingController forgotPasswordController = TextEditingController();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -54,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
                           Text(
                             'Sign In',
                             textAlign: TextAlign.center,
-                            style : Theme.of(context).primaryTextTheme.bodyLarge,
+                            style: Theme.of(context).primaryTextTheme.bodyLarge,
                           ),
                           Padding(
                             padding: EdgeInsets.all(height * 0.015),
@@ -64,9 +64,13 @@ class _AccountPageState extends State<AccountPage> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Text("Email",
-                                      style : Theme.of(context).primaryTextTheme.bodyMedium),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodyMedium),
                                 ),
                                 TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  controller: emailController,
                                   validator: (val) {
                                     if (val == '') {
                                       return "Field can't be empty";
@@ -84,11 +88,14 @@ class _AccountPageState extends State<AccountPage> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Text("Password",
-                                      style : Theme.of(context).primaryTextTheme.bodyMedium),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodyMedium),
                                 ),
                                 StatefulBuilder(
                                     builder: (context, StateSetter setState) {
                                   return TextFormField(
+                                      controller: passwordController,
                                       validator: (val) {
                                         if (val == '') {
                                           return "Field can't be empty";
@@ -131,13 +138,15 @@ class _AccountPageState extends State<AccountPage> {
                                               children: [
                                                 Text(
                                                   "Enter Email",
-                                                  style : Theme.of(context).primaryTextTheme.bodyMedium,
+                                                  style: Theme.of(context)
+                                                      .primaryTextTheme
+                                                      .bodyMedium,
                                                 ),
                                                 SizedBox(
                                                     height: height * 0.006),
                                                 Padding(
-                                                  padding:
-                                                      EdgeInsets.all(width * 0.02),
+                                                  padding: EdgeInsets.all(
+                                                      width * 0.02),
                                                   child: TextField(
                                                     controller:
                                                         forgotPasswordController,
@@ -192,7 +201,9 @@ class _AccountPageState extends State<AccountPage> {
                                                     },
                                                     child:
                                                         const Text("Confirm")),
-                                                        SizedBox(height: height * 0.01,),
+                                                SizedBox(
+                                                  height: height * 0.01,
+                                                ),
                                               ],
                                             )).show();
                                       },
@@ -216,8 +227,17 @@ class _AccountPageState extends State<AccountPage> {
                                                   email: emailController.text,
                                                   password:
                                                       passwordController.text);
-                                          Navigator.pushReplacementNamed(
-                                              context, '/home');
+                                          if (credential.user != null)
+                                            Navigator.pushReplacementNamed(
+                                                context, '/home');
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .loadLocalAccount(
+                                                  credential.user!.uid);
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .updateEmail(
+                                                  emailController.text);
                                         } on FirebaseAuthException catch (e) {
                                           if (e.code == 'user-not-found') {
                                             showFailureDialog(
@@ -227,7 +247,28 @@ class _AccountPageState extends State<AccountPage> {
                                               'wrong-password') {
                                             showFailureDialog(
                                                 'Wrong Password', context);
+                                          } else if (e.code ==
+                                              'network-request-failed') {
+                                            showFailureDialog(
+                                                'Network error', context);
+                                          } else if (e.code ==
+                                              'too-many-requests') {
+                                            showFailureDialog(
+                                                'Too many requests', context);
+                                          } else if (e.code ==
+                                              'user-token-expired') {
+                                            showFailureDialog(
+                                                'User token expired', context);
+                                          } else if (e.code ==
+                                              'invalid-email') {
+                                            showFailureDialog(
+                                                'Invalid email', context);
+                                          } else if (e.code ==
+                                              'user-disabled') {
+                                            showFailureDialog(
+                                                'User Disabled', context);
                                           } else {
+                                            print(e);
                                             showFailureDialog(
                                                 'Something went wrong',
                                                 context);
@@ -428,6 +469,10 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         onTap: () async {
                           await FirebaseAuth.instance.signOut();
+                          Provider.of<UserProvider>(context, listen: false)
+                              .setUser(null);
+                          Provider.of<ProductProvider>(context, listen: false)
+                              .clearCart();
                           setState(() {});
                         },
                       ),

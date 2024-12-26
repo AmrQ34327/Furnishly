@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
 import 'package:furnishly/model/fakedata.dart';
@@ -35,7 +36,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     if (!_isInitialized) {
       final Account? currentUser =
@@ -295,7 +295,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       ),
                     ),
                     Text(
-                      '\$ ${Provider.of<ProductProvider>(context, listen: false).subtotal.toStringAsFixed(2)} ',
+                      '\$ ${Provider.of<UserProvider>(context, listen: false).subtotal.toStringAsFixed(2)} ',
                       style: TextStyle(
                         color:
                             Theme.of(context).primaryTextTheme.bodySmall!.color,
@@ -330,7 +330,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       ),
                     ),
                     Text(
-                      '- ${Provider.of<ProductProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
+                      '- \$ ${Provider.of<UserProvider>(context, listen: false).totalDiscount.toStringAsFixed(2)} ',
                       style: TextStyle(
                         color:
                             Theme.of(context).primaryTextTheme.bodySmall!.color,
@@ -369,7 +369,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             ),
                           ),
                           Text(
-                            '- ${promoCode.toStringAsFixed(2)} ',
+                            '- \$ ${promoCode.toStringAsFixed(2)} ',
                             style: TextStyle(
                               color: Theme.of(context)
                                   .primaryTextTheme
@@ -443,7 +443,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       ),
                     ),
                     Text(
-                      '\$ ${(Provider.of<ProductProvider>(context, listen: false).totalPrice + shippingFees - promoCode).toStringAsFixed(2)} ',
+                      '\$ ${(Provider.of<UserProvider>(context, listen: false).totalPrice + shippingFees - promoCode).toStringAsFixed(2)} ',
                       style: TextStyle(
                         color:
                             Theme.of(context).primaryTextTheme.bodySmall!.color,
@@ -484,13 +484,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               .toLocal()
                                               .toString()
                                               .split(' ')[0]),
-                              orderedItems: Provider.of<ProductProvider>(
+                              orderedItems: Provider.of<UserProvider>(
                                       context,
                                       listen: false)
-                                  .cart
+                                  .currentUser!.userCart
                                   .toList(),
                               paymentMethod: paymentMethod,
-                              totalPrice: Provider.of<ProductProvider>(context,
+                              totalPrice: Provider.of<UserProvider>(context,
                                           listen: false)
                                       .totalPrice +
                                   shippingFees -
@@ -507,11 +507,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                         .cart,
                                     productList);
                             // 3 - clear cart
-                            Provider.of<ProductProvider>(context, listen: false)
+                            Provider.of<UserProvider>(context, listen: false)
                                 .clearCart();
-                            // navigate to my orders page when i make it
-                            //Navigator.pushNamed(context, '/orders');
-                            Navigator.pushNamed(context, '/home');
+                            // navigate to my home page
+                            final uid = FirebaseAuth.instance.currentUser!.uid;
+                            Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(uid);
+                            Navigator.pushReplacementNamed(context, '/home');
                           }
                           // do the credit card here
                         }
