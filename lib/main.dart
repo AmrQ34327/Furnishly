@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/model/model.dart' as model;
+import 'package:furnishly/model/model.dart';
 import 'package:furnishly/views/checkout_page.dart';
 import 'package:furnishly/views/contact_us_page.dart';
 import 'package:furnishly/views/edit_profile.dart';
@@ -20,16 +21,26 @@ import 'firebase_options.dart';
 import 'views/sign_up_page.dart';
 import 'model/fakedata.dart';
 import 'controller/controller.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+late Box<Account> accountsBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Hive.initFlutter();
+  Hive.registerAdapter(AccountAdapter());
+  Hive.registerAdapter(OrderAdapter());
+  Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(CartItemAdapter());
+  Hive.registerAdapter(CategoryAdapter());
+  accountsBox = await Hive.openBox<Account>('accountsBox');
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider(accountsBox)),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
       child: const MyApp(),
@@ -60,6 +71,16 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Load the local account if a user is logged in
+      if (Provider.of<UserProvider>(context, listen: false).currentUser ==
+          null) {
+        //  load local account
+        Provider.of<UserProvider>(context, listen: false)
+            .loadLocalAccount(user.uid);
+      }
+    }
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
@@ -99,7 +120,6 @@ class _MyAppState extends State<MyApp> {
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
             style: ButtonStyle(
-    
           foregroundColor:
               WidgetStatePropertyAll(Color.fromARGB(255, 255, 255, 255)),
           backgroundColor: WidgetStatePropertyAll(Color(0xFF556B2F)),
@@ -132,7 +152,7 @@ class _MyAppState extends State<MyApp> {
         '/wishlist': (context) => WishlistPage(),
         '/checkout': (context) => CheckOutPage(),
         '/myOrders': (context) => MyOrdersPage(),
-        '/faq' : (context) => FAQPage(),
+        '/faq': (context) => FAQPage(),
         '/contactUsPage': (context) => ContactUsPage(),
       },
     );
@@ -176,15 +196,13 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: MyAppBar(),
         body: SafeArea(
           child: Padding(
-            padding:  EdgeInsets.all(width * 0.042),
+            padding: EdgeInsets.all(width * 0.042),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(
-                    "Discover",
-                    style : Theme.of(context).primaryTextTheme.bodyLarge
-                  ),
+                  Text("Discover",
+                      style: Theme.of(context).primaryTextTheme.bodyLarge),
                   SizedBox(height: height * 0.03),
                   // the search bar
                   TextField(
@@ -205,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                   SizedBox(height: height * 0.03),
+                  SizedBox(height: height * 0.03),
                   // products list
                   searchBarController.text.isNotEmpty
                       ? SizedBox(
@@ -213,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ? height * 0.2
                               : height * 0.4,
                           child: filteredProductsList.isEmpty
-                              ?  Center(
+                              ? Center(
                                   child: Text(
                                     'No products found',
                                     style: TextStyle(fontSize: width * 0.045),
@@ -394,7 +412,7 @@ class ShowProducts extends StatelessWidget {
                               .color,
                         ),
                       ),
-                      SizedBox(height: height * 0.035) 
+                      SizedBox(height: height * 0.035)
                     ],
                   ),
                 ),

@@ -57,7 +57,7 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
       appBar: MyAppBar(),
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(width * 0.04),
+          padding: EdgeInsets.all(width * 0.04),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -97,6 +97,11 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                                   quantity: product.quantity,
                                   category: product.category,
                                 ));
+                                final uid =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .saveLocalAccount(uid);
                               } else {
                                 // unfavorite it and remove
                                 setState(() {
@@ -105,9 +110,13 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                                 Provider.of<UserProvider>(context,
                                         listen: false)
                                     .removeFromWishlist(product.id);
+                                final uid =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .saveLocalAccount(uid);
                               }
                             }
-                            // probaly init is favorited by a method that searches the wishlist
                           },
                           icon: Icon(
                             isFavorited
@@ -202,9 +211,9 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                           color: Colors.white, fontWeight: FontWeight.bold),
                       controller: quantityController,
                       keyboardType: TextInputType.number,
-                      decoration:  InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.045), 
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: width * 0.045),
                         fillColor: const Color.fromARGB(255, 6, 68, 119),
                         filled: true,
                         border: const OutlineInputBorder(),
@@ -251,20 +260,42 @@ class _ViewSingleProductState extends State<ViewSingleProduct> {
                               'Item already in cart. Increase quantity instead',
                               context);
                         } else {
-                          // add to cart
-                          Provider.of<ProductProvider>(context, listen: false)
-                              .addToCart(CartItem(
-                                  id: product.id,
-                                  title: product.title,
-                                  description: product.description,
-                                  imagePath: product.imagePath,
-                                  price: product.price,
-                                  hasDiscount: product.hasDiscount,
-                                  discount: product.discount,
-                                  quantity: productQuantity,
-                                  category: product.category));
-                          showSuccesDialog('Item added successfully', context,
-                              duration: 2);
+                          // add to global cart if signed out - not saved
+                          if (FirebaseAuth.instance.currentUser == null) {
+                            Provider.of<ProductProvider>(context, listen: false)
+                                .addToCart(CartItem(
+                                    id: product.id,
+                                    title: product.title,
+                                    description: product.description,
+                                    imagePath: product.imagePath,
+                                    price: product.price,
+                                    hasDiscount: product.hasDiscount,
+                                    discount: product.discount,
+                                    quantity: productQuantity,
+                                    category: product.category));
+                            showSuccesDialog('Item added successfully', context,
+                                duration: 2);
+                          } else if (FirebaseAuth.instance.currentUser !=
+                              null) {
+                            // add to local cart
+                            Provider.of<UserProvider>(context, listen: false)
+                                .addToCart(CartItem(
+                                    id: product.id,
+                                    title: product.title,
+                                    description: product.description,
+                                    imagePath: product.imagePath,
+                                    price: product.price,
+                                    hasDiscount: product.hasDiscount,
+                                    discount: product.discount,
+                                    quantity: productQuantity,
+                                    category: product.category));
+                            showSuccesDialog('Item added successfully', context,
+                                duration: 2);
+                            // update local cart stored in hive
+                            Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(
+                                    FirebaseAuth.instance.currentUser!.uid);
+                          }
                         }
                       }
                     : null,

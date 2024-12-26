@@ -1,11 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/model/fakedata.dart';
 import 'package:furnishly/model/model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:core';
-
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:furnishly/main.dart';
 
 class UserProvider extends ChangeNotifier {
+  final Box<Account> accountsBox;
+
+  UserProvider(this.accountsBox);
+
   Account? _currentUser;
 
   // Getter to access the user
@@ -15,7 +22,61 @@ class UserProvider extends ChangeNotifier {
 
   get orderList => _currentUser!.orderList;
 
-  void setUser(Account user) {
+  void addToCart(CartItem item) {
+    _currentUser!.userCart.add(item);
+    notifyListeners();
+  }
+
+   double get totalDiscount {
+    double totalDiscount = 0;
+    for (var item in _currentUser!.userCart) {
+      if (item.hasDiscount) {
+        totalDiscount = totalDiscount + item.discount * item.quantity;
+      }
+    }
+    return totalDiscount;
+  }
+
+   double get totalPrice {
+    double total = 0;
+    for (var item in _currentUser!.userCart) {
+      total += item.totalPrice;
+    }
+    return total;
+  }
+
+   double get subtotal {
+    double subtotal = 0;
+    for (var item in _currentUser!.userCart) {
+      subtotal += item.price;
+    }
+    return subtotal;
+  }
+
+   void removeFromCart(String id) {
+    _currentUser!.userCart.removeWhere((item) => item.id == id);
+    notifyListeners();
+  }
+
+   void clearCart() {
+    _currentUser!.userCart.clear();
+    notifyListeners();
+  }
+
+
+  void saveLocalAccount(String uid) {
+    accountsBox.put(uid, _currentUser!);
+    notifyListeners();
+  }
+
+  void loadLocalAccount(String uid) {
+    _currentUser = accountsBox.get(uid);
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+    notifyListeners();
+  });
+  }
+
+  void setUser(Account? user) {
     _currentUser = user;
     notifyListeners();
   }
@@ -40,10 +101,10 @@ class UserProvider extends ChangeNotifier {
     // search wishlist
     for (var item in _currentUser!.wishlist) {
       if (item.id == ID) {
-        productFound == true;
+        productFound = true;
         break;
       } else {
-        productFound == false;
+        productFound = false;
       }
     }
     return productFound;
@@ -54,10 +115,14 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // this will probably be of no use
+  
   void updateEmail(String newEmail) {
-    _currentUser!.email = newEmail;
+    // for when signing in after updating email with firebase 
+    // and verifying it
+    if (newEmail != _currentUser!.email){
+      _currentUser!.email = newEmail;
     notifyListeners();
+    }
   }
 
   void setPassword(String newPassword) {
@@ -75,8 +140,6 @@ class UserProvider extends ChangeNotifier {
     _currentUser!.mainAddress = address;
     notifyListeners();
   }
-
-  // To-D0 Make the methods add to wishlist and add to orders
 }
 
 class ProductProvider extends ChangeNotifier {
@@ -93,8 +156,6 @@ class ProductProvider extends ChangeNotifier {
     cart.removeWhere((item) => item.id == id);
     notifyListeners();
   }
-
-  
 
   List<String> outOfStockProducts() {
     List<String> resultList = [];

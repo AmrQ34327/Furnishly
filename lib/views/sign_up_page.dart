@@ -36,11 +36,9 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: <Widget>[
                 SizedBox(height: height * 0.06),
-                Text(
-                  'Sign Up',
-                  textAlign: TextAlign.center,
-                 style : Theme.of(context).primaryTextTheme.bodyLarge
-                ),
+                Text('Sign Up',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).primaryTextTheme.bodyLarge),
                 Padding(
                   padding: EdgeInsets.all(height * 0.015),
                   child: Column(
@@ -49,8 +47,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Name",
-                            style : Theme.of(context).primaryTextTheme.bodyMedium
-                            ),
+                            style:
+                                Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         controller: usernameController,
@@ -65,8 +63,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Email",
-                            style : Theme.of(context).primaryTextTheme.bodyMedium
-                            ),
+                            style:
+                                Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
@@ -88,7 +86,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Password",
-                            style : Theme.of(context).primaryTextTheme.bodyMedium),
+                            style:
+                                Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       StatefulBuilder(builder: (context, StateSetter setState) {
                         return TextFormField(
@@ -135,7 +134,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Phone Number",
-                            style : Theme.of(context).primaryTextTheme.bodyMedium),
+                            style:
+                                Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.phone,
@@ -164,7 +164,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text("Address",
-                            style : Theme.of(context).primaryTextTheme.bodyMedium),
+                            style:
+                                Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
                         keyboardType: TextInputType.streetAddress,
@@ -189,13 +190,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                     .createUserWithEmailAndPassword(
                                   email: emailController.text,
                                   password: passwordController.text,
-                                  
                                 );
                                 var currentProfile = Account(
                                   username: titleCase(usernameController.text),
                                   email: emailController.text,
                                   wishlist: [],
                                   orderList: [],
+                                  // if global cart empty initalize with an empty cart else add products already added to that global cart
+                                  userCart: Provider.of<ProductProvider>(context, listen: false).isCartEmpty ? [] :Provider.of<ProductProvider>(context, listen: false).cart.toList() ,
                                 );
                                 Provider.of<UserProvider>(context,
                                         listen: false)
@@ -213,6 +215,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                     .addAddress(addressController.text);
                                 Navigator.pushReplacementNamed(
                                     context, '/home');
+                                print('Local User UID ----------------------');
+                                print(credential.user!.uid);
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .saveLocalAccount(credential.user!.uid);
                               } on FirebaseAuthException catch (e) {
                                 if (e.code == 'weak-password') {
                                   showFailureDialog(

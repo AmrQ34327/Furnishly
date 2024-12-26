@@ -13,15 +13,16 @@ class MyOrdersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-     
+
     final orderList = Provider.of<UserProvider>(context).orderList;
     // Sort the orderList by orderMadeDate (newest to oldest)
-    orderList.sort((Order a, Order b) => b.orderMadeDate.compareTo(a.orderMadeDate));
+    orderList
+        .sort((Order a, Order b) => b.orderMadeDate.compareTo(a.orderMadeDate));
     return Scaffold(
       appBar: MyAppBar(showSignInOut: false),
       body: SafeArea(
           child: Padding(
-        padding:  EdgeInsets.all(height * 0.025),
+        padding: EdgeInsets.all(height * 0.025),
         child: Column(
           children: [
             // here
@@ -54,28 +55,40 @@ class MyOrdersPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: height * 0.012),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: context.watch<UserProvider>().orderList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final order = 
-                    Provider.of<UserProvider>(context).orderList[index];
-                    return Padding(
-                      padding:  EdgeInsets.all(width * 0.01),
-                      child: OrderCard(
-                        name: order.name,
-                        address: order.address,
-                        date: order.date,
-                        orderNumber: order.orderNumber,
-                        phoneNumber: order.phoneNumber,
-                        total: order.total,
-                        paymentMethod: order.paymentMethod,
-                        orderedItems: order.orderedItems,
-                      ),
-                    );
-                  }),
-            ),
+            Provider.of<UserProvider>(context, listen: false)
+                    .currentUser!
+                    .orderList
+                    .isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                        itemCount:
+                            context.watch<UserProvider>().orderList.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final order = Provider.of<UserProvider>(context)
+                              .orderList[index];
+                          return Padding(
+                            padding: EdgeInsets.all(width * 0.01),
+                            child: OrderCard(
+                              name: order.name,
+                              address: order.address,
+                              date: order.date,
+                              orderNumber: order.orderNumber,
+                              phoneNumber: order.phoneNumber,
+                              total: order.total,
+                              paymentMethod: order.paymentMethod,
+                              orderedItems: order.orderedItems,
+                            ),
+                          );
+                        }),
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(top: height * 0.3),
+                    child: Text(
+                      'No past orders',
+                      style: Theme.of(context).primaryTextTheme.bodyMedium,
+                    ),
+                  ),
           ],
         ),
       )),
@@ -110,7 +123,7 @@ class OrderCard extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Card(
       child: Padding(
-        padding:  EdgeInsets.all(width * 0.015),
+        padding: EdgeInsets.all(width * 0.015),
         child: Column(
           children: [
             // name row
@@ -124,9 +137,12 @@ class OrderCard extends StatelessWidget {
                   child: Text(
                     titleCase(name),
                     style: TextStyle(
-                      color: Theme.of(context).primaryTextTheme.bodySmall!.color,
-                      fontSize:
-                          Theme.of(context).primaryTextTheme.bodyMedium!.fontSize,
+                      color:
+                          Theme.of(context).primaryTextTheme.bodySmall!.color,
+                      fontSize: Theme.of(context)
+                          .primaryTextTheme
+                          .bodyMedium!
+                          .fontSize,
                       fontWeight: Theme.of(context)
                           .primaryTextTheme
                           .bodySmall!
@@ -149,9 +165,12 @@ class OrderCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     titleCase(address),
                     style: TextStyle(
-                      color: Theme.of(context).primaryTextTheme.bodySmall!.color,
-                      fontSize:
-                          Theme.of(context).primaryTextTheme.bodyMedium!.fontSize,
+                      color:
+                          Theme.of(context).primaryTextTheme.bodySmall!.color,
+                      fontSize: Theme.of(context)
+                          .primaryTextTheme
+                          .bodyMedium!
+                          .fontSize,
                       fontWeight: Theme.of(context)
                           .primaryTextTheme
                           .bodySmall!
@@ -194,7 +213,8 @@ class OrderCard extends StatelessWidget {
                     children: [
                       // order info widget
                       OrderInfo(title: 'Order Number', subtitle: orderNumber),
-                      OrderInfo(title: 'Recipient Name', subtitle: titleCase(name)),
+                      OrderInfo(
+                          title: 'Recipient Name', subtitle: titleCase(name)),
                       OrderInfo(title: 'Phone Number', subtitle: phoneNumber),
                       OrderInfo(title: 'Delivery Address', subtitle: address),
                       OrderInfo(title: 'Delivery Date', subtitle: date),
@@ -229,7 +249,9 @@ class OrderCard extends StatelessWidget {
                                     // item quantatiy
                                     Text(
                                       '${orderedItem.quantity.toString()} x',
-                                      style : Theme.of(context).primaryTextTheme.bodySmall,
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodySmall,
                                     ),
                                     SizedBox(
                                       width: 5,
@@ -237,7 +259,9 @@ class OrderCard extends StatelessWidget {
                                     // item title
                                     Text(
                                       orderedItem.title,
-                                      style : Theme.of(context).primaryTextTheme.bodySmall,
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .bodySmall,
                                     )
                                   ],
                                 ));
@@ -331,7 +355,7 @@ class OrderInfo extends StatelessWidget {
         ),
         Text(
           subtitle,
-          style : Theme.of(context).primaryTextTheme.bodySmall,
+          style: Theme.of(context).primaryTextTheme.bodySmall,
         ),
         SizedBox(
           height: 6,
