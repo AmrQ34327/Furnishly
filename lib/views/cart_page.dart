@@ -442,14 +442,31 @@ class _CartTileState2 extends State<CartTile2> {
                             .bodyMedium!
                             .color,
                         onPressed: () {
-                          setState(() {
-                            widget.productQuantity++;
-                            quantityController.text =
-                                widget.productQuantity.toString();
-                            Provider.of<ProductProvider>(context, listen: false)
-                                .updateQuantity(
-                                    widget.cartItem, widget.productQuantity);
-                          });
+                          // firebase user signed out ?
+                          FirebaseAuth.instance.currentUser == null
+                              ? setState(() {
+                                  widget.productQuantity++;
+                                  quantityController.text =
+                                      widget.productQuantity.toString();
+                                  Provider.of<ProductProvider>(context,
+                                          listen: false)
+                                      .updateQuantity(widget.cartItem,
+                                          widget.productQuantity);
+                                })
+                              :
+                              // firebase user signed in
+                              setState(() {
+                                  widget.productQuantity++;
+                                  quantityController.text =
+                                      widget.productQuantity.toString();
+                                  Provider.of<ProductProvider>(context,
+                                          listen: false)
+                                      .updateQuantity(widget.cartItem,
+                                          widget.productQuantity);
+                                });
+                          Provider.of<UserProvider>(context, listen: false)
+                              .saveLocalAccount(
+                                  FirebaseAuth.instance.currentUser!.uid);
                         },
                         icon: const Icon(Icons.add),
                       ),
