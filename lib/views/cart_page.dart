@@ -498,18 +498,35 @@ class _CartTileState2 extends State<CartTile2> {
                             .primaryTextTheme
                             .bodyMedium!
                             .color,
-                        onPressed: () {
-                          setState(() {
-                            if (widget.productQuantity > 1) {
-                              widget.productQuantity--;
-                              quantityController.text =
-                                  widget.productQuantity.toString();
-                              Provider.of<ProductProvider>(context,
-                                      listen: false)
-                                  .updateQuantity(
-                                      widget.cartItem, widget.productQuantity);
-                            }
-                          });
+                        onPressed:  () {
+                          FirebaseAuth.instance.currentUser == null
+                              ? setState(() {
+                                  if (widget.productQuantity > 1) {
+                                    widget.productQuantity--;
+                                    quantityController.text =
+                                        widget.productQuantity.toString();
+                                    Provider.of<ProductProvider>(context,
+                                            listen: false)
+                                        .updateQuantity(widget.cartItem,
+                                            widget.productQuantity);
+                                  }
+                                })
+                              :
+                              // firebase user signed in
+                              setState(() {
+                                  if (widget.productQuantity > 1) {
+                                    widget.productQuantity--;
+                                    quantityController.text =
+                                        widget.productQuantity.toString();
+                                    Provider.of<ProductProvider>(context,
+                                            listen: false)
+                                        .updateQuantity(widget.cartItem,
+                                            widget.productQuantity);
+                                  }
+                                });
+                          Provider.of<UserProvider>(context, listen: false)
+                              .saveLocalAccount(
+                                  FirebaseAuth.instance.currentUser!.uid);
                         },
                         icon: const Icon(Icons.remove),
                       ),
