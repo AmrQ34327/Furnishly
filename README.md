@@ -35,6 +35,11 @@ Furnishly is a Flutter-based e-commerce application designed to provide users wi
 - **Data Persistance**: User data is saved locally using Hive, allowing for data persistence. This enables multiple users to access the app from the same mobile device while retaining their individual information.
 - **Email Verification**: An email verification link is sent when a user signs up using email/password. This ensures that users have a valid email address. However, email verification is not required for purchase functionality to simplify testing.
 - **Google Sign-In**: Users can sign in with their Google account. If the user does not have an account, a new account is automatically created with the user's Google credentials (such as display name and email).
+- **Secure Local Storage**: The app encrypts the Hive box with AES encryption to safeguard sensitive data. The encryption key is securely stored in the Keystore via the Flutter_Keychain package, ensuring that user information remains protected from unauthorized access.
+
+
+
+
 
 ### Cart Page
   - **Displays Products in Cart**: If the cart is empty it displays "Cart is empty", otherwise it displays products in cart with an option to increase/decrease quantatity and remove from cart.
