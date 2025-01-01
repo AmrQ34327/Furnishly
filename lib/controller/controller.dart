@@ -5,7 +5,7 @@ import 'package:furnishly/model/model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:core';
 import 'package:provider/provider.dart';
-import 'package:furnishly/main.dart';
+
 
 class UserProvider extends ChangeNotifier {
   final Box<Account> accountsBox;

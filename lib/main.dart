@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:furnishly/model/model.dart' as model;
 import 'package:furnishly/model/model.dart';
 import 'package:furnishly/views/checkout_page.dart';
 import 'package:furnishly/views/contact_us_page.dart';
@@ -22,11 +22,22 @@ import 'views/sign_up_page.dart';
 import 'model/fakedata.dart';
 import 'controller/controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_keychain/flutter_keychain.dart';
 
 late Box<Account> accountsBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  var encryptionKey64 = await FlutterKeychain.get(key: "encryptionKey");
+  List<int> hiveKey;
+  if (encryptionKey64 == null) {
+    final madeEncryptionKey = Hive.generateSecureKey();
+    hiveKey = madeEncryptionKey;
+    String base64Key = base64UrlEncode(madeEncryptionKey);
+    await FlutterKeychain.put(key: "encryptionKey", value: base64Key);
+  } else {
+    hiveKey = base64Url.decode(encryptionKey64);
+  }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -36,7 +47,9 @@ void main() async {
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(CartItemAdapter());
   Hive.registerAdapter(CategoryAdapter());
-  accountsBox = await Hive.openBox<Account>('accountsBox');
+  accountsBox = await Hive.openBox<Account>('accountsBox',
+      encryptionCipher: HiveAesCipher(hiveKey));
+
   runApp(
     MultiProvider(
       providers: [
