@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,6 +81,10 @@ class _MyAppBarState extends State<MyAppBar> {
                   FirebaseAuth.instance.currentUser == null
                       ? Navigator.pushNamed(context, '/account')
                       : await FirebaseAuth.instance.signOut();
+                  GoogleSignIn googleSignIn = GoogleSignIn();
+                  if (await googleSignIn.isSignedIn() == true){
+                    googleSignIn.disconnect();
+                  }
                   Provider.of<ProductProvider>(context, listen: false)
                       .clearCart();
                   Provider.of<UserProvider>(context, listen: false)

@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furnishly/controller/controller.dart';
+import 'package:furnishly/views/my_orders.dart';
 import 'package:provider/provider.dart';
 import '../model/model.dart';
 import 'shared.dart';
@@ -236,8 +237,9 @@ class _AccountPageState extends State<AccountPage> {
                                                   credential.user!.uid);
                                           Provider.of<UserProvider>(context,
                                                   listen: false)
-                                              .updateEmail(
-                                                  emailController.text);
+                                              .updateEmailAndPasswordLocally(
+                                                  emailController.text,
+                                                  passwordController.text);
                                         } on FirebaseAuthException catch (e) {
                                           if (e.code == 'user-not-found') {
                                             showFailureDialog(
@@ -292,9 +294,50 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                           ElevatedButton.icon(
                             onPressed: () async {
-                              // make the google sign in logic here
-                              await signInWithGoogle();
-                              Navigator.pushReplacementNamed(context, '/home');
+                              final UserCredential? googleUser =
+                                  await signInWithGoogle();
+                              if (googleUser != null) {
+                                if (googleUser.additionalUserInfo!.isNewUser ==
+                                    true) {
+                                  // set new local account
+                                  var currentProfile = Account(
+                                      username: titleCase(
+                                          googleUser.user!.displayName ?? ''),
+                                      email: googleUser.user!.email ?? '',
+                                      phoneNumber:
+                                          googleUser.user!.phoneNumber ?? '',
+                                      wishlist: [],
+                                      orderList: [],
+                                      // if global cart empty initilaize with an empty cart else add products already added to the global cart
+                                      userCart: Provider.of<ProductProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .isCartEmpty
+                                          ? []
+                                          : Provider.of<ProductProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .cart
+                                              .toList());
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .setUser(currentProfile);
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .saveLocalAccount(googleUser.user!.uid);
+                                      Navigator.pushReplacementNamed(context, '/home');
+                                } else {
+                                  // load user account
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .loadLocalAccount(googleUser.user!.uid);
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .updateEmailAndPasswordLocally(
+                                          googleUser.user!.email!);
+                                          Navigator.pushReplacementNamed(context, '/home');
+                                }
+                              }
                             },
                             icon: Image.asset(
                               'assets/googlelogo.png',
@@ -468,6 +511,10 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                         ),
                         onTap: () async {
+                          GoogleSignIn googleSignIn = GoogleSignIn();
+                          if (await googleSignIn.isSignedIn() == true) {
+                            googleSignIn.disconnect();
+                          }
                           await FirebaseAuth.instance.signOut();
                           Provider.of<UserProvider>(context, listen: false)
                               .setUser(null);
@@ -485,9 +532,13 @@ class _AccountPageState extends State<AccountPage> {
   }
 }
 
-Future<UserCredential> signInWithGoogle() async {
+Future<UserCredential?> signInWithGoogle() async {
   // Trigger the authentication flow
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  if (googleUser == null) {
+    return Future.value(null);
+  }
 
   // Obtain the auth details from the request
   final GoogleSignInAuthentication? googleAuth =

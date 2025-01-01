@@ -196,23 +196,25 @@ class _SignUpPageState extends State<SignUpPage> {
                                   email: emailController.text,
                                   wishlist: [],
                                   orderList: [],
+                                  password: passwordController.text,
+                                  phoneNumber: phoneController.text,
+                                  mainAddress: addressController.text,
                                   // if global cart empty initalize with an empty cart else add products already added to that global cart
-                                  userCart: Provider.of<ProductProvider>(context, listen: false).isCartEmpty ? [] :Provider.of<ProductProvider>(context, listen: false).cart.toList() ,
+                                  userCart: Provider.of<ProductProvider>(
+                                              context,
+                                              listen: false)
+                                          .isCartEmpty
+                                      ? []
+                                      : Provider.of<ProductProvider>(context,
+                                              listen: false)
+                                          .cart
+                                          .toList(),
                                 );
                                 Provider.of<UserProvider>(context,
                                         listen: false)
                                     .setUser(currentProfile);
                                 await FirebaseAuth.instance.currentUser!
                                     .sendEmailVerification();
-                                Provider.of<UserProvider>(context,
-                                        listen: false)
-                                    .setPassword(passwordController.text);
-                                Provider.of<UserProvider>(context,
-                                        listen: false)
-                                    .setPhoneNumber(phoneController.text);
-                                Provider.of<UserProvider>(context,
-                                        listen: false)
-                                    .addAddress(addressController.text);
                                 Navigator.pushReplacementNamed(
                                     context, '/home');
                                 print('Local User UID ----------------------');

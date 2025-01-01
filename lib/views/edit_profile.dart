@@ -21,10 +21,9 @@ class EditAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Account? currentUser = Provider.of<UserProvider>(context).currentUser;
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final TextEditingController passwordController =
-        TextEditingController(text: currentUser!.password);
+        TextEditingController(text: currentUser?.password ?? '');
     return Scaffold(
       appBar: MyAppBar(
         showSignInOut: false,
@@ -40,14 +39,15 @@ class EditAccountPage extends StatelessWidget {
                 EditInfoWidget(
                     originalFormKey: formKey2,
                     textTitle: "Name",
-                    textInField: currentUser.username,
+                    textInField: currentUser!.username,
                     dialogTitle: "Enter New Name",
                     dialogHintText: 'Enter New Name',
                     confirmButtonFunction: () {
                       if (formKey2!.currentState!.validate()) {
                         if (usernameDialogController.text.isNotEmpty) {
                           Provider.of<UserProvider>(context, listen: false)
-                              .updateUsername(titleCase(usernameDialogController.text));
+                              .updateUsername(
+                                  titleCase(usernameDialogController.text));
                           usernameDialogController.clear();
                           Navigator.pop(context);
                           //show success dialog ???
@@ -62,7 +62,7 @@ class EditAccountPage extends StatelessWidget {
                     textTitle: "Email",
                     showEmailVerificationStatus: true,
                     // change below to !
-                    textInField: currentUser.email ,
+                    textInField: currentUser!.email,
                     dialogTitle: "Enter New Email",
                     dialogHintText: "Enter New Email",
                     confirmButtonFunction: () async {
@@ -77,7 +77,8 @@ class EditAccountPage extends StatelessWidget {
                             // show succesful dialog check inbox for verefication
                             showSuccesDialog(
                                 "Please check your inbox for a verification email to complete the process",
-                                context, duration: 4);
+                                context,
+                                duration: 4);
                           } on FirebaseAuthException catch (e) {
                             // can enhance it & make it reauthentica user
                             if (e.code == 'requires-recent-login') {
@@ -114,6 +115,9 @@ class EditAccountPage extends StatelessWidget {
                             Navigator.pop(context);
                             showSuccesDialog("Password Updated", context);
                             passwordDialogController.clear();
+                            Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(
+                                    FirebaseAuth.instance.currentUser!.uid);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'requires-recent-login') {
                               showFailureDialog(
@@ -146,6 +150,9 @@ class EditAccountPage extends StatelessWidget {
                           Navigator.pop(context);
                           showSuccesDialog(
                               'Phone Number Changed Successfully', context);
+                              Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(
+                                    FirebaseAuth.instance.currentUser!.uid);
                         }
                       } else {
                         print('Validation Failed - Debugging');
@@ -170,6 +177,9 @@ class EditAccountPage extends StatelessWidget {
                           showSuccesDialog(
                               'Your address has been successfully updated',
                               context);
+                              Provider.of<UserProvider>(context, listen: false)
+                                .saveLocalAccount(
+                                    FirebaseAuth.instance.currentUser!.uid);
                         }
                       }
                     },

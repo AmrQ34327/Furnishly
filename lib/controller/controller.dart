@@ -5,7 +5,6 @@ import 'package:furnishly/model/model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:core';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:furnishly/main.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -27,7 +26,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-   double get totalDiscount {
+  double get totalDiscount {
     double totalDiscount = 0;
     for (var item in _currentUser!.userCart) {
       if (item.hasDiscount) {
@@ -37,7 +36,7 @@ class UserProvider extends ChangeNotifier {
     return totalDiscount;
   }
 
-   double get totalPrice {
+  double get totalPrice {
     double total = 0;
     for (var item in _currentUser!.userCart) {
       total += item.totalPrice;
@@ -45,7 +44,7 @@ class UserProvider extends ChangeNotifier {
     return total;
   }
 
-   double get subtotal {
+  double get subtotal {
     double subtotal = 0;
     for (var item in _currentUser!.userCart) {
       subtotal += item.price;
@@ -53,16 +52,15 @@ class UserProvider extends ChangeNotifier {
     return subtotal;
   }
 
-   void removeFromCart(String id) {
+  void removeFromCart(String id) {
     _currentUser!.userCart.removeWhere((item) => item.id == id);
     notifyListeners();
   }
 
-   void clearCart() {
+  void clearCart() {
     _currentUser!.userCart.clear();
     notifyListeners();
   }
-
 
   void saveLocalAccount(String uid) {
     accountsBox.put(uid, _currentUser!);
@@ -71,9 +69,9 @@ class UserProvider extends ChangeNotifier {
 
   void loadLocalAccount(String uid) {
     _currentUser = accountsBox.get(uid);
-     WidgetsBinding.instance.addPostFrameCallback((_) {
-    notifyListeners();
-  });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   void setUser(Account? user) {
@@ -115,13 +113,20 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-  void updateEmail(String newEmail) {
+  void updateEmailAndPasswordLocally(String newEmail, [String? newPassword]) {
     // for when signing in after updating email with firebase 
     // and verifying it
-    if (newEmail != _currentUser!.email){
-      _currentUser!.email = newEmail;
-    notifyListeners();
+    if (_currentUser != null) {
+      if (newEmail != _currentUser!.email) {
+        _currentUser!.email = newEmail;
+        saveLocalAccount(FirebaseAuth.instance.currentUser!.uid);
+        notifyListeners();
+      }// for when a password is resetted using firebase
+      if (newPassword != _currentUser!.password && newPassword != null) {
+        _currentUser!.password = newPassword;
+        saveLocalAccount(FirebaseAuth.instance.currentUser!.uid);
+        notifyListeners();
+      }
     }
   }
 
@@ -241,3 +246,5 @@ bool isItemInWishList(BuildContext context, String ID) {
   }
   return productFound;
 }
+
+

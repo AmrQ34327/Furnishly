@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "8960635358-0rlrr3d7kk1hhrid8du797npng96ll6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.furnishly",
+            "certificate_hash": "d99f5b8774d004eeeb9b52624465e46eb43a3ff6"
+          }
+        },
+        {
           "client_id": "8960635358-fm9g1kvlu0isu3r5lh2d7s2r9hm5o5g9.apps.googleusercontent.com",
           "client_type": 3
         }
