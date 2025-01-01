@@ -30,8 +30,8 @@ Furnishly is a Flutter-based e-commerce application designed to provide users wi
 - **Viewing Products**: Selecting a category opens a page with the filter chip for that category pre-selected.
 
 ### Account Page
--  **Sign-in Page**: If the user is not signed in, a Sign-in page is displayed featuring fields for email and password. It includes a "Forgot Password" option for resetting the password using Firebase, a sign-in button, a "Sign in with Google" button, and an option to sign up for users who do not have an account.
--**Edit Account Page** If the user is signed in, the interface provides options to **Edit account information**, **View the wishlist**, **Check past orders**, and **Sign out**.
+- **Sign-in Page**: If the user is not signed in, a Sign-in page is displayed featuring fields for email and password. It includes a "Forgot Password" option for resetting the password using Firebase, a sign-in button, a "Sign in with Google" button, and an option to sign up for users who do not have an account.
+- **Edit Account Page** If the user is signed in, the interface provides options to **Edit account information**, **View the wishlist**, **Check past orders**, and **Sign out**.
 - **Data Persistance**: User data is saved locally using Hive, allowing for data persistence. This enables multiple users to access the app from the same mobile device while retaining their individual information.
 - **Email Verification**: An email verification link is sent when a user signs up using email/password. This ensures that users have a valid email address. However, email verification is not required for purchase functionality to simplify testing.
 - **Google Sign-In**: Users can sign in with their Google account. If the user does not have an account, a new account is automatically created with the user's Google credentials (such as display name and email).
