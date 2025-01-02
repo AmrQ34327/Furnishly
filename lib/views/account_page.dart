@@ -10,17 +10,19 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
-  static final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   State<AccountPage> createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   User? _currentUser;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  TextEditingController forgotPasswordController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController forgotPasswordController;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
 
   @override
   void initState() {
@@ -30,14 +32,28 @@ class _AccountPageState extends State<AccountPage> {
         _currentUser = user;
       });
     });
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    forgotPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    forgotPasswordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    bool obscureText = true; // return it up if it doesnt work
+    bool obscureText = true;
     final width = MediaQuery.of(context).size.width;
-    Account? currentUser = Provider.of<UserProvider>(context).currentUser;
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -49,7 +65,7 @@ class _AccountPageState extends State<AccountPage> {
                 ? Padding(
                     padding: EdgeInsets.only(top: height * 0.06),
                     child: Form(
-                      key: AccountPage.formKey,
+                      key: _formKey,
                       child: Column(
                         children: <Widget>[
                           Text(
@@ -70,6 +86,7 @@ class _AccountPageState extends State<AccountPage> {
                                           .bodyMedium),
                                 ),
                                 TextFormField(
+                                  focusNode: emailFocusNode,
                                   keyboardType: TextInputType.emailAddress,
                                   controller: emailController,
                                   validator: (val) {
@@ -82,6 +99,11 @@ class _AccountPageState extends State<AccountPage> {
                                       hintText: 'Enter your email',
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: OutlineInputBorder()),
+                                  onFieldSubmitted: (value) {
+                                    // move focus to next field
+                                    FocusScope.of(context)
+                                        .requestFocus(passwordFocusNode);
+                                  },
                                 ),
                                 SizedBox(
                                   height: height * 0.017,
@@ -96,6 +118,7 @@ class _AccountPageState extends State<AccountPage> {
                                 StatefulBuilder(
                                     builder: (context, StateSetter setState) {
                                   return TextFormField(
+                                      focusNode: passwordFocusNode,
                                       controller: passwordController,
                                       validator: (val) {
                                         if (val == '') {
@@ -219,8 +242,7 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () async {
-                                      if (AccountPage.formKey.currentState!
-                                          .validate()) {
+                                      if (_formKey.currentState!.validate()) {
                                         try {
                                           final credential = await FirebaseAuth
                                               .instance
@@ -325,7 +347,8 @@ class _AccountPageState extends State<AccountPage> {
                                   Provider.of<UserProvider>(context,
                                           listen: false)
                                       .saveLocalAccount(googleUser.user!.uid);
-                                      Navigator.pushReplacementNamed(context, '/home');
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
                                 } else {
                                   // load user account
                                   Provider.of<UserProvider>(context,
@@ -335,7 +358,8 @@ class _AccountPageState extends State<AccountPage> {
                                           listen: false)
                                       .updateEmailAndPasswordLocally(
                                           googleUser.user!.email!);
-                                          Navigator.pushReplacementNamed(context, '/home');
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
                                 }
                               }
                             },

@@ -22,6 +22,38 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController addressController = TextEditingController();
   static final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool obscureText = true;
+  late FocusNode nameFocusNode;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
+  late FocusNode phoneNumberFocusNode;
+  late FocusNode addressFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    nameFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
+    phoneNumberFocusNode = FocusNode();
+    addressFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    phoneNumberFocusNode.dispose();
+    addressFocusNode.dispose();
+
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +83,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
+                        focusNode: nameFocusNode,
                         controller: usernameController,
                         decoration: const InputDecoration(
                             hintText: 'Enter your name',
                             hintStyle: TextStyle(color: Colors.grey),
                             border: OutlineInputBorder()),
+                        onFieldSubmitted: (value) {
+                          FocusScope.of(context).requestFocus(emailFocusNode);
+                        },
                       ),
                       SizedBox(
                         height: height * 0.017,
@@ -67,6 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
+                        focusNode: emailFocusNode,
                         keyboardType: TextInputType.emailAddress,
                         validator: (val) {
                           if (val == '') {
@@ -79,6 +116,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             hintText: 'Enter your email',
                             hintStyle: TextStyle(color: Colors.grey),
                             border: OutlineInputBorder()),
+                        onFieldSubmitted: (value) {
+                          FocusScope.of(context)
+                              .requestFocus(passwordFocusNode);
+                        },
                       ),
                       SizedBox(
                         height: height * 0.017,
@@ -91,6 +132,11 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       StatefulBuilder(builder: (context, StateSetter setState) {
                         return TextFormField(
+                            onFieldSubmitted: (value) {
+                              FocusScope.of(context)
+                                  .requestFocus(phoneNumberFocusNode);
+                            },
+                            focusNode: passwordFocusNode,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (val) {
@@ -138,6 +184,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
+                        onFieldSubmitted: (value) {
+                          FocusScope.of(context).requestFocus(addressFocusNode);
+                        },
+                        focusNode: phoneNumberFocusNode,
                         keyboardType: TextInputType.phone,
                         validator: (val) {
                           if (val == '') {
@@ -168,6 +218,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Theme.of(context).primaryTextTheme.bodyMedium),
                       ),
                       TextFormField(
+                        focusNode: addressFocusNode,
                         keyboardType: TextInputType.streetAddress,
                         validator: (val) {
                           if (val == '') {
@@ -217,8 +268,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                     .sendEmailVerification();
                                 Navigator.pushReplacementNamed(
                                     context, '/home');
-                                print('Local User UID ----------------------');
-                                print(credential.user!.uid);
                                 Provider.of<UserProvider>(context,
                                         listen: false)
                                     .saveLocalAccount(credential.user!.uid);

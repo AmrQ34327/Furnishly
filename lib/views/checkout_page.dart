@@ -21,6 +21,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController promoCodeController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  late FocusNode nameFocusNode;
+  late FocusNode addressFocusNode;
+  late FocusNode phoneFocusNode;
   final int shippingFees = 10;
   double promoCode = 0;
   DateTime threeDaysAfterTodayDate =
@@ -33,6 +36,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   String paymentMethod = 'Cash on delivery';
   bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    nameFocusNode = FocusNode();
+    addressFocusNode = FocusNode();
+    phoneFocusNode = FocusNode();
+  }
 
   @override
   void didChangeDependencies() {
@@ -48,9 +59,20 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final Account? currentUser = Provider.of<UserProvider>(context).currentUser;
+  void dispose() {
+    nameController.dispose();
+    addressController.dispose();
+    phoneController.dispose();
+    promoCodeController.dispose();
+    dateController.dispose();
+    nameFocusNode.dispose();
+    addressFocusNode.dispose();
+    phoneFocusNode.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     DateTime soonAsPossibleDate = DateTime(threeDaysAfterTodayDate.year,
@@ -68,6 +90,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CheckOutInfoWidget(
+                    onFieldSubmitted: (val) {
+                      FocusScope.of(context).requestFocus(addressFocusNode);
+                      return null;
+                    },
+                    focusNode: nameFocusNode,
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Must provide a name';
@@ -78,6 +105,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     hintText: 'Enter Your Name',
                     fieldController: nameController),
                 CheckOutInfoWidget(
+                    onFieldSubmitted: (value) {
+                      FocusScope.of(context).requestFocus(phoneFocusNode);
+                      return null;
+                    },
+                    focusNode: addressFocusNode,
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Must provide an address';
@@ -89,6 +121,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     isAddressField: true,
                     fieldController: addressController),
                 CheckOutInfoWidget(
+                    focusNode: phoneFocusNode,
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Must provide a phone number';
@@ -484,10 +517,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                               .toLocal()
                                               .toString()
                                               .split(' ')[0]),
-                              orderedItems: Provider.of<UserProvider>(
-                                      context,
+                              orderedItems: Provider.of<UserProvider>(context,
                                       listen: false)
-                                  .currentUser!.userCart
+                                  .currentUser!
+                                  .userCart
                                   .toList(),
                               paymentMethod: paymentMethod,
                               totalPrice: Provider.of<UserProvider>(context,

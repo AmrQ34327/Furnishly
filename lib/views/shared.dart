@@ -82,7 +82,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       ? Navigator.pushNamed(context, '/account')
                       : await FirebaseAuth.instance.signOut();
                   GoogleSignIn googleSignIn = GoogleSignIn();
-                  if (await googleSignIn.isSignedIn() == true){
+                  if (await googleSignIn.isSignedIn() == true) {
                     googleSignIn.disconnect();
                   }
                   Provider.of<ProductProvider>(context, listen: false)
@@ -516,14 +516,18 @@ class CheckOutInfoWidget extends StatelessWidget {
   final String hintText;
   final TextEditingController fieldController;
   final String? Function(String?)? validator;
+  final String? Function(String)? onFieldSubmitted;
   final bool isPhoneField;
   final bool isAddressField;
+  final FocusNode focusNode;
 
   const CheckOutInfoWidget(
       {super.key,
       required this.title,
       required this.hintText,
       required this.fieldController,
+      required this.focusNode,
+       this.onFieldSubmitted,
       this.isPhoneField = false,
       this.isAddressField = false,
       this.validator});
@@ -537,6 +541,8 @@ class CheckOutInfoWidget extends StatelessWidget {
           Text(title, style: Theme.of(context).primaryTextTheme.bodyMedium),
           SizedBox(height: height * 0.01),
           TextFormField(
+            onFieldSubmitted: onFieldSubmitted,
+              focusNode: focusNode,
               keyboardType: isPhoneField
                   ? TextInputType.phone
                   : isAddressField

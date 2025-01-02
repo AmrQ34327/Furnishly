@@ -3,19 +3,46 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:furnishly/model/model.dart';
 import 'package:furnishly/views/shared.dart';
 
+class ContactUsPage extends StatefulWidget {
+  ContactUsPage({super.key});
 
-class ContactUsPage extends StatelessWidget {
+  @override
+  State<ContactUsPage> createState() => _ContactUsPageState();
+}
+
+class _ContactUsPageState extends State<ContactUsPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
 
-  ContactUsPage({super.key});
+  late FocusNode nameFocusNode;
+  late FocusNode emailFocusNode;
+  late FocusNode messageFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    nameFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
+    messageFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    messageFocusNode.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-     
+
     return Scaffold(
       appBar: MyAppBar(
         showSignInOut: false,
@@ -29,7 +56,7 @@ class ContactUsPage extends StatelessWidget {
               children: [
                 Text(
                   "Get in Touch",
-                  style : Theme.of(context).primaryTextTheme.bodyLarge,
+                  style: Theme.of(context).primaryTextTheme.bodyLarge,
                 ),
                 SizedBox(height: height * 0.022),
                 // Phone Card
@@ -41,7 +68,7 @@ class ContactUsPage extends StatelessWidget {
                       "Call us at: +1-234-567-8900",
                       style: Theme.of(context).primaryTextTheme.bodyMedium,
                     ),
-                    trailing: Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       makePhoneCall('+12345678900');
                     },
@@ -57,7 +84,7 @@ class ContactUsPage extends StatelessWidget {
                       "Email us at: support@furnishly.com",
                       style: Theme.of(context).primaryTextTheme.bodyMedium,
                     ),
-                    trailing: Icon(Icons.arrow_forward_ios),
+                    trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       sendEmail('support@furnishly.com');
                     },
@@ -79,25 +106,35 @@ class ContactUsPage extends StatelessWidget {
                 // Inquiry Form
                 Text(
                   "Quick Inquiry",
-                  style : Theme.of(context).primaryTextTheme.bodyLarge,
+                  style: Theme.of(context).primaryTextTheme.bodyLarge,
                 ),
                 SizedBox(height: height * 0.021),
                 TextField(
+                  onSubmitted: (value){
+                    FocusScope.of(context).requestFocus(emailFocusNode);
+                  },
+                  focusNode: nameFocusNode,
                   controller: nameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Name', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: height * 0.01),
                 TextField(
+                  onSubmitted: (value) {
+                    FocusScope.of(context).requestFocus(messageFocusNode);
+                  },
+                  focusNode: emailFocusNode,
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Email', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: height * 0.01),
                 TextField(
+                  textInputAction: TextInputAction.done,
+                  focusNode: messageFocusNode,
                   controller: messageController,
                   maxLines: 4,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Message', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: height * 0.021),
@@ -110,8 +147,8 @@ class ContactUsPage extends StatelessWidget {
                       sendInquiryEmail(nameController.text,
                           emailController.text, messageController.text);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            backgroundColor: const Color(0xFF556B2F),
+                        const SnackBar(
+                            backgroundColor: Color(0xFF556B2F),
                             content: Text('Your message has been sent!',
                                 style: TextStyle(color: Colors.white))),
                       );
@@ -119,15 +156,15 @@ class ContactUsPage extends StatelessWidget {
                       emailController.clear();
                       messageController.clear();
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: const Color.fromARGB(255, 88, 4, 4),
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: Color.fromARGB(255, 88, 4, 4),
                           content: Text(
                             'Complete all fields to send an inquiry',
                             style: TextStyle(color: Colors.white),
                           )));
                     }
                   },
-                  child: Text('Send Inquiry'),
+                  child: const Text('Send Inquiry'),
                 ),
                 SizedBox(height: height * 0.023),
                 // Social Media Links
@@ -135,22 +172,25 @@ class ContactUsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.facebook, color: Colors.blue),
+                      icon: const Icon(Icons.facebook, color: Colors.blue),
                       onPressed: () {
                         openFacebook();
                       },
                     ),
                     IconButton(
-                      icon: const Icon(FontAwesomeIcons.instagram, color: Color.fromARGB(255, 228, 64, 95) 
- ,),
+                      icon: const Icon(
+                        FontAwesomeIcons.instagram,
+                        color: Color.fromARGB(255, 228, 64, 95),
+                      ),
                       onPressed: () {
                         // Open Instagram link
                         openInstagram();
                       },
                     ),
                     IconButton(
-                      icon:  Icon(
-                        FontAwesomeIcons.x,size: width * 0.05,
+                      icon: Icon(
+                        FontAwesomeIcons.x,
+                        size: width * 0.05,
                       ),
                       onPressed: () {
                         openX();
